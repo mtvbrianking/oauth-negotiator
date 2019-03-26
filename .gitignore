@@ -1,0 +1,5 @@
+composer.lock
+coverage
+coverage.clover
+docs
+vendor

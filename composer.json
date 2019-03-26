@@ -1,0 +1,56 @@
+{
+    "name": "bmatovu/oauth-negotiator",
+    "description": "OAuth2 client token manager.",
+    "homepage": "https://github.com/mtvbrianking/oauth-negotiator",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "package",
+        "oauth",
+        "oauth2",
+        "guzzle"
+        "middleware"
+    ],
+    "authors": [
+        {
+            "name": "Brian Matovu",
+            "email": "mtvbrianking@gmail.com",
+            "homepage": "http://bmatovu.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "ext-json": "*",
+        "php": ">=5.6.4",
+        "nesbot/carbon": "~1.20",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.0",
+        "orchestra/testbench": "~3.3.0"
+    },
+    "suggest": {
+        "monolog/monolog": "For comprehesive logging."
+    },
+    "autoload": {
+        "psr-4": {
+            "Bmatovu\\OAuthNegotiator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bmatovu\\OAuthNegotiator\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "doc": "phpdoc -d src -t docs",
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
