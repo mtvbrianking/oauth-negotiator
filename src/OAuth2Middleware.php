@@ -5,10 +5,10 @@
 
 namespace Bmatovu\OAuthNegotiator\Http;
 
-use Carbon\Carbon;
-use Psr\Http\Message\RequestInterface;
-use GuzzleHttp\Exception\RequestException;
 use Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException;
+use Carbon\Carbon;
+use GuzzleHttp\Exception\RequestException;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Class OAuth2Middleware.
@@ -46,8 +46,8 @@ class OAuth2Middleware
     /**
      * Constructor.
      *
-     * @param \Bmatovu\GrantTypes\GrantTypeInterface $grantType
-     * @param \Bmatovu\GrantTypes\GrantTypeInterface $refreshTokenGrantType
+     * @param \Bmatovu\GrantTypes\GrantTypeInterface                         $grantType
+     * @param \Bmatovu\GrantTypes\GrantTypeInterface                         $refreshTokenGrantType
      * @param \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface $tokenRepository
      */
     public function __construct($grantType, $refreshTokenGrantType = null, $tokenRepository = null)
@@ -61,6 +61,7 @@ class OAuth2Middleware
      * Guzzle middleware invocation.
      *
      * @param callable $handler
+     *
      * @return \Closure
      */
     public function __invoke(callable $handler)
@@ -82,8 +83,9 @@ class OAuth2Middleware
      * retrying the request.
      *
      * @param \Psr\Http\Message\RequestInterface $request
-     * @param array $options
-     * @param callable $handler
+     * @param array                              $options
+     * @param callable                           $handler
+     *
      * @return \Closure
      */
     private function onFulfilled(RequestInterface $request, array $options, callable $handler)
@@ -125,8 +127,8 @@ class OAuth2Middleware
      * When request is rejected.
      *
      * @param \Psr\Http\Message\RequestInterface $request
-     * @param array $options
-     * @param callable $handler
+     * @param array                              $options
+     * @param callable                           $handler
      *
      * @return \Closure
      */
@@ -158,9 +160,9 @@ class OAuth2Middleware
     /**
      * Get a valid access token.
      *
-     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface|null
-     *
      * @throws TokenRequestException
+     *
+     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface|null
      */
     public function getToken()
     {
@@ -182,9 +184,9 @@ class OAuth2Middleware
     /**
      * Acquire a new access token from the server.
      *
-     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface
-     *
      * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException
+     *
+     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface
      */
     protected function requestNewToken()
     {

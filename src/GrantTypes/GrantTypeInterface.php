@@ -13,7 +13,7 @@ interface GrantTypeInterface
     /**
      * Obtain the token data returned by the OAuth2 server.
      *
-     * @param string $grantType Name
+     * @param string $grantType    Name
      * @param string $refreshToken
      *
      * @return array API token

@@ -12,6 +12,7 @@ interface TokenInterface
 {
     /**
      * Get access token.
+     *
      * @return string
      */
     public function getAccessToken();
