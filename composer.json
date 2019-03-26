@@ -9,7 +9,7 @@
         "package",
         "oauth",
         "oauth2",
-        "guzzle"
+        "guzzle",
         "middleware"
     ],
     "authors": [
