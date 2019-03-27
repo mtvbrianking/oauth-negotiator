@@ -3,7 +3,7 @@
  * OAuth2Middleware.
  */
 
-namespace Bmatovu\OAuthNegotiator\Http;
+namespace Bmatovu\OAuthNegotiator;
 
 use Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException;
 use Carbon\Carbon;
@@ -18,14 +18,14 @@ class OAuth2Middleware
     /**
      * Primary grant type.
      *
-     * @var \Bmatovu\GrantTypes\GrantTypeInterface
+     * @var \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface
      */
     protected $grantType;
 
     /**
      * Refresh token (secondary) grant type.
      *
-     * @var \Bmatovu\GrantTypes\GrantTypeInterface
+     * @var \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface
      */
     protected $refreshTokenGrantType;
 
@@ -46,8 +46,8 @@ class OAuth2Middleware
     /**
      * Constructor.
      *
-     * @param \Bmatovu\GrantTypes\GrantTypeInterface                         $grantType
-     * @param \Bmatovu\GrantTypes\GrantTypeInterface                         $refreshTokenGrantType
+     * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface                         $grantType
+     * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface                         $refreshTokenGrantType
      * @param \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface $tokenRepository
      */
     public function __construct($grantType, $refreshTokenGrantType = null, $tokenRepository = null)
