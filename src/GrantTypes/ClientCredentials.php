@@ -28,8 +28,10 @@ class ClientCredentials implements GrantTypeInterface
 
     /**
      * Constructor.
+     *
      * @param \GuzzleHttp\ClientInterface $client
-     * @param array $config
+     * @param array                       $config
+     *
      * @throws \Exception
      */
     public function __construct(ClientInterface $client, array $config)
@@ -48,8 +50,8 @@ class ClientCredentials implements GrantTypeInterface
     {
         $response = $this->client->request('POST', $this->config['token_uri'], [
             'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
                 'Authorization' => 'Basic '.base64_encode($this->config['client_id'].':'.$this->config['client_secret']),
             ],
             'json' => [

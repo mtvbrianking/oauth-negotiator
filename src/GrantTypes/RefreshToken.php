@@ -28,8 +28,10 @@ class RefreshToken implements GrantTypeInterface
 
     /**
      * Constructor.
+     *
      * @param \GuzzleHttp\ClientInterface $client
-     * @param array $config
+     * @param array                       $config
+     *
      * @throws \Exception
      */
     public function __construct(ClientInterface $client, array $config)
@@ -37,8 +39,8 @@ class RefreshToken implements GrantTypeInterface
         $this->client = $client;
 
         $this->config = array_merge([
-            'token_uri' => '',
-            'client_id' => '',
+            'token_uri'     => '',
+            'client_id'     => '',
             'client_secret' => '',
         ], $config);
     }
@@ -50,12 +52,12 @@ class RefreshToken implements GrantTypeInterface
     {
         $response = $this->client->request('POST', $this->config['token_uri'], [
             'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
                 'Authorization' => 'Basic '.base64_encode($this->config['client_id'].':'.$this->config['client_secret']),
             ],
             'json' => [
-                'grant_type' => 'refresh_token',
+                'grant_type'    => 'refresh_token',
                 'refresh_token' => $refreshToken,
             ],
         ]);

@@ -14,24 +14,28 @@ class Token implements TokenInterface
 {
     /**
      * Access token.
+     *
      * @var string
      */
     protected $access_token;
 
     /**
      * Refresh token.
+     *
      * @var string
      */
     protected $refresh_token = null;
 
     /**
      * Token type.
+     *
      * @var string
      */
     protected $token_type = 'Bearer';
 
     /**
      * Expires at.
+     *
      * @var string Datatime
      */
     protected $expires_at = null;
@@ -39,23 +43,23 @@ class Token implements TokenInterface
     /**
      * Constructor.
      *
-     * @param  array  $attributes
+     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
-        if(empty($attributes)) {
+        if (empty($attributes)) {
             return;
         }
 
         $this->access_token = $attributes['access_token'];
 
-        if(isset($attributes['refresh_token'])) {
+        if (isset($attributes['refresh_token'])) {
             $this->refresh_token = $attributes['refresh_token'];
         }
 
         $this->token_type = $attributes['token_type'];
 
-        if(isset($attributes['expires_at'])) {
+        if (isset($attributes['expires_at'])) {
             $this->expires_at = $attributes['expires_at'];
         } else {
             $this->expires_at = Carbon::now()
@@ -163,5 +167,4 @@ class Token implements TokenInterface
 
         return true;
     }
-
 }

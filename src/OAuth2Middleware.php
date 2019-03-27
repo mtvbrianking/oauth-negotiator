@@ -6,7 +6,6 @@
 namespace Bmatovu\OAuthNegotiator;
 
 use Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException;
-use Carbon\Carbon;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 
@@ -46,8 +45,8 @@ class OAuth2Middleware
     /**
      * Constructor.
      *
-     * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface                         $grantType
-     * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface                         $refreshTokenGrantType
+     * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface         $grantType
+     * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface         $refreshTokenGrantType
      * @param \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface $tokenRepository
      */
     public function __construct($grantType, $refreshTokenGrantType = null, $tokenRepository = null)
@@ -163,6 +162,7 @@ class OAuth2Middleware
 
     /**
      * Set token.
+     *
      * @param \Bmatovu\OAuthNegotiator\Models\TokenInterface $token
      */
     public function setToken($token)
