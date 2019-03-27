@@ -1,5 +1,8 @@
+.idea
 composer.lock
 coverage
 coverage.clover
 docs
+example
+token.json
 vendor

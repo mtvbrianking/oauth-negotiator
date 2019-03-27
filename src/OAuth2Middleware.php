@@ -69,10 +69,11 @@ class OAuth2Middleware
         return function (RequestInterface $request, array $options) use ($handler) {
             $request = $this->signRequest($request);
 
-            return $handler($request, $options)->then(
-                $this->onFulfilled($request, $options, $handler),
-                $this->onRejected($request, $options, $handler)
-            );
+            return $handler($request, $options)
+                ->then(
+                    $this->onFulfilled($request, $options, $handler),
+                    $this->onRejected($request, $options, $handler)
+                );
         };
     }
 
@@ -91,6 +92,7 @@ class OAuth2Middleware
     private function onFulfilled(RequestInterface $request, array $options, callable $handler)
     {
         return function ($response) use ($request, $options, $handler) {
+
             // Only deal with Unauthorized response.
             if ($response && $response->getStatusCode() != 401) {
                 return $response;
@@ -117,7 +119,9 @@ class OAuth2Middleware
             }
 
             $request = $request->withHeader('X-Guzzle-Retry', '1');
-            $request = $this->signRequest($request);
+
+            // Resign request
+            $request = $request->withHeader('Authorization', 'Bearer '.$this->token->getAccessToken());
 
             return $handler($request, $options);
         };
@@ -158,6 +162,15 @@ class OAuth2Middleware
     }
 
     /**
+     * Set token.
+     * @param \Bmatovu\OAuthNegotiator\Models\TokenInterface $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
      * Get a valid access token.
      *
      * @throws TokenRequestException
@@ -171,7 +184,7 @@ class OAuth2Middleware
             $this->token = $this->tokenRepository->retrieve();
         }
 
-        // If token is not set or expired then try to acquire a new one...
+        // If storage token is not set or expired then try to acquire a new one...
         if ($this->token === null || $this->token->isExpired()) {
 
             // Hydrate `rawToken` with a new access token
@@ -179,6 +192,26 @@ class OAuth2Middleware
         }
 
         return $this->token;
+    }
+
+    /**
+     * Set token repository.
+     *
+     * @param \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface $tokenRepository
+     */
+    public function setTokenRepository($tokenRepository)
+    {
+        $this->tokenRepository = $tokenRepository;
+    }
+
+    /**
+     * Get token repository.
+     *
+     * @return \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface
+     */
+    public function getTokenRepository()
+    {
+        return $this->tokenRepository;
     }
 
     /**
@@ -201,8 +234,6 @@ class OAuth2Middleware
 
             // Obtain new access token using the main grant type.
             $api_token = $this->grantType->getToken();
-
-            $api_token['expires_at'] = Carbon::now()->addSeconds($api_token['expires_in']);
 
             return $this->tokenRepository->create($api_token);
         } catch (RequestException $ex) {
