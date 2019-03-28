@@ -17,16 +17,16 @@ class FileTokenRepository implements TokenRepositoryInterface
      *
      * @var string
      */
-    protected $file = 'token.txt';
+    protected $tokenFile = 'token.txt';
 
     /**
      * Constructor.
      *
-     * @param string $file
+     * @param string $tokenFile
      */
-    public function __construct($file)
+    public function __construct($tokenFile)
     {
-        return $this->file = $file;
+        return $this->tokenFile = $tokenFile;
     }
 
     /**
@@ -36,17 +36,17 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function getTokenFile()
     {
-        return $this->file;
+        return $this->tokenFile;
     }
 
     /**
      * Set token file.
      *
-     * @param string $file
+     * @param string $tokenFile
      */
-    public function setTokenFile($file)
+    public function setTokenFile($tokenFile)
     {
-        $this->file = $file;
+        $this->tokenFile = $tokenFile;
     }
 
     /**
@@ -56,7 +56,7 @@ class FileTokenRepository implements TokenRepositoryInterface
     {
         $token = new Token($attributes);
 
-        file_put_contents($this->file, serialize($token));
+        file_put_contents($this->tokenFile, serialize($token));
 
         return new Token($attributes);
     }
@@ -66,11 +66,11 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function retrieve($access_token = null)
     {
-        if (!file_exists($this->file)) {
+        if (!file_exists($this->tokenFile)) {
             return;
         }
 
-        $token = unserialize(file_get_contents($this->file));
+        $token = unserialize(file_get_contents($this->tokenFile));
 
         if ($token == null) {
             return;
@@ -88,7 +88,7 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function update($access_token, array $attributes)
     {
-        $token = unserialize(file_get_contents($this->file));
+        $token = unserialize(file_get_contents($this->tokenFile));
 
         if ($token->getAccessToken() != $access_token) {
             return;
@@ -98,7 +98,7 @@ class FileTokenRepository implements TokenRepositoryInterface
         $token = new Token($attributes);
 
         // Overwrite
-        file_put_contents($this->file, serialize($attributes));
+        file_put_contents($this->tokenFile, serialize($attributes));
 
         return $token;
     }
@@ -108,12 +108,12 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function delete($access_token)
     {
-        $token = unserialize(file_get_contents($this->file));
+        $token = unserialize(file_get_contents($this->tokenFile));
 
         if ($token->getAccessToken() != $access_token) {
             return;
         }
 
-        unlink($this->file);
+        unlink($this->tokenFile);
     }
 }

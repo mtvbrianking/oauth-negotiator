@@ -1,6 +1,6 @@
 <?php
 /**
- * ClientCredentials.
+ * RefreshToken.
  */
 
 namespace Bmatovu\OAuthNegotiator\GrantTypes;
@@ -8,7 +8,7 @@ namespace Bmatovu\OAuthNegotiator\GrantTypes;
 use GuzzleHttp\ClientInterface;
 
 /**
- * Class ClientCredentials.
+ * Class RefreshToken.
  */
 class RefreshToken implements GrantTypeInterface
 {
