@@ -12,7 +12,7 @@ if (!function_exists('is_associative')) {
      */
     function is_associative(array $arr)
     {
-        if (array() === $arr) {
+        if ([] === $arr) {
             return false;
         }
 

@@ -23,7 +23,7 @@ class RefreshTokenTest extends TestCase
 
         $missing = ['token_uri', 'client_id', 'client_secret'];
 
-        $message = 'Parameters: ' . implode(', ', $missing) . ' are required.';
+        $message = 'Parameters: '.implode(', ', $missing).' are required.';
 
         $this->expectExceptionMessage($message);
 

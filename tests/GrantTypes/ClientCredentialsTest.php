@@ -23,7 +23,7 @@ class ClientCredentialsTest extends TestCase
 
         $missing = ['token_uri', 'client_id', 'client_secret'];
 
-        $message = 'Parameters: ' . implode(', ', $missing) . ' are required.';
+        $message = 'Parameters: '.implode(', ', $missing).' are required.';
 
         $this->expectExceptionMessage($message);
 
@@ -72,10 +72,10 @@ class ClientCredentialsTest extends TestCase
         $client_secret = 'On8dC2YE7LHwo0fwqOQH';
 
         $grantType = new ClientCredentials($client, [
-            'token_uri' => 'oauth/token',
-            'client_id' => $client_id,
+            'token_uri'     => 'oauth/token',
+            'client_id'     => $client_id,
             'client_secret' => $client_secret,
-            'scope' => 'user_login,user_registration',
+            'scope'         => 'user_login,user_registration',
         ]);
 
         $api_token = $grantType->getToken();
