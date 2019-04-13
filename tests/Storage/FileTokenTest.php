@@ -28,10 +28,6 @@ class FileTokenTest extends TestCase
     {
         $this->testTokenFile = tempnam(sys_get_temp_dir(), 'phpunit_test_');
 
-        if (file_exists($this->testTokenFile)) {
-            unlink($this->testTokenFile);
-        }
-
         $this->repository = new FileTokenRepository($this->testTokenFile);
     }
 
@@ -47,8 +43,6 @@ class FileTokenTest extends TestCase
 
     /**
      * @test
-     *
-     * @group passing
      */
     public function can_create_token()
     {
@@ -89,8 +83,6 @@ class FileTokenTest extends TestCase
 
     /**
      * @test
-     *
-     * @group failing
      */
     public function cant_retrieve_missing_token()
     {
@@ -99,8 +91,6 @@ class FileTokenTest extends TestCase
 
     /**
      * @test
-     *
-     * @group failing
      */
     public function cant_retrieve_unknown_token()
     {
@@ -111,8 +101,6 @@ class FileTokenTest extends TestCase
 
     /**
      * @test
-     *
-     * @group passing
      */
     public function can_retrieve_first_available_token()
     {
@@ -138,8 +126,6 @@ class FileTokenTest extends TestCase
 
     /**
      * @test
-     *
-     * @group passing
      */
     public function can_retrieve_token()
     {
@@ -158,8 +144,6 @@ class FileTokenTest extends TestCase
 
     /**
      * @test
-     *
-     * @group failing
      */
     public function cant_update_missing_token()
     {

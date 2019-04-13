@@ -1,6 +1,6 @@
 <?php
 /**
- * TokenRepository.
+ * FileTokenRepository.
  */
 
 namespace Bmatovu\OAuthNegotiator\Repositories;
@@ -9,7 +9,7 @@ use Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException;
 use Bmatovu\OAuthNegotiator\Models\Token;
 
 /**
- * Class TokenRepository.
+ * Class FileTokenRepository.
  */
 class FileTokenRepository implements TokenRepositoryInterface
 {
@@ -67,7 +67,9 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function retrieve($access_token = null)
     {
-        $token = unserialize(file_get_contents($this->tokenFile));
+        $rawToken = file_get_contents($this->tokenFile);
+
+        $token = $rawToken ? unserialize($rawToken) : null;
 
         if ($access_token) {
             if (!$token || ($token->getAccessToken() != $access_token)) {
@@ -83,13 +85,15 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function update($access_token, array $attributes)
     {
-        $token = unserialize(file_get_contents($this->tokenFile));
+        $rawToken = file_get_contents($this->tokenFile);
 
-        if ($token->getAccessToken() != $access_token) {
+        $token = $rawToken ? unserialize($rawToken) : null;
+
+        if (!$token || ($token->getAccessToken() != $access_token)) {
             throw new TokenNotFoundException('Missing token.');
         }
 
-        // Rewrite token
+        // Create new/updated token
         $token = new Token($attributes);
 
         // Overwrite
@@ -103,9 +107,11 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function delete($access_token)
     {
-        $token = unserialize(file_get_contents($this->tokenFile));
+        $rawToken = file_get_contents($this->tokenFile);
 
-        if ($token->getAccessToken() != $access_token) {
+        $token = $rawToken ? unserialize($rawToken) : null;
+
+        if (!$token || ($token->getAccessToken() != $access_token)) {
             throw new TokenNotFoundException('Missing token.');
         }
 

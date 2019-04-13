@@ -15,7 +15,7 @@ interface GrantTypeInterface
      *
      * @param string $refreshToken
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException
      *
      * @return array API token
      */
