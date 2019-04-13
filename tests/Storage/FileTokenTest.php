@@ -4,10 +4,10 @@ namespace Bmatovu\OAuthNegotiator\Tests\Storage;
 
 use Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException;
 use Bmatovu\OAuthNegotiator\Models\Token;
-use Carbon\Carbon;
-use PHPUnit\Framework\TestCase;
 use Bmatovu\OAuthNegotiator\Models\TokenInterface;
 use Bmatovu\OAuthNegotiator\Repositories\FileTokenRepository;
+use Carbon\Carbon;
+use PHPUnit\Framework\TestCase;
 
 class FileTokenTest extends TestCase
 {
@@ -53,10 +53,10 @@ class FileTokenTest extends TestCase
     public function can_create_token()
     {
         $token = $this->repository->create([
-            'access_token' => 'QC9jztmMfeHoRg5zyTiR',
+            'access_token'  => 'QC9jztmMfeHoRg5zyTiR',
             'refresh_token' => '4IAtuQ1aQZhHeRGlFcX6',
-            'token_type' => 'Bearer',
-            'expires_in' => 3600,
+            'token_type'    => 'Bearer',
+            'expires_in'    => 3600,
         ]);
 
         $this->assertFileExists($this->testTokenFile);
@@ -72,10 +72,10 @@ class FileTokenTest extends TestCase
     public function can_sets_correct_expires_at()
     {
         $token = new Token([
-            'access_token' => 'QC9jztmMfeHoRg5zyTiR',
+            'access_token'  => 'QC9jztmMfeHoRg5zyTiR',
             'refresh_token' => '4IAtuQ1aQZhHeRGlFcX6',
-            'token_type' => 'Bearer',
-            'expires_in' => 3600,
+            'token_type'    => 'Bearer',
+            'expires_in'    => 3600,
         ]);
 
         $expires_at = Carbon::now()->addSeconds(3600)->format('Y-m-d H:i:s');
@@ -117,17 +117,17 @@ class FileTokenTest extends TestCase
     public function can_retrieve_first_available_token()
     {
         $this->repository->create([
-            'access_token' => 'QC9jztmMfeHoRg5zyTiR',
+            'access_token'  => 'QC9jztmMfeHoRg5zyTiR',
             'refresh_token' => '4IAtuQ1aQZhHeRGlFcX6',
-            'token_type' => 'Bearer',
-            'expires_in' => 3600,
+            'token_type'    => 'Bearer',
+            'expires_in'    => 3600,
         ]);
 
         $this->repository->create([
-            'access_token' => 'neGb9VrmDgeHVucZlYvn',
+            'access_token'  => 'neGb9VrmDgeHVucZlYvn',
             'refresh_token' => 'tPh9XtPrr7w62lEH1RlK',
-            'token_type' => 'Bearer',
-            'expires_in' => 3600,
+            'token_type'    => 'Bearer',
+            'expires_in'    => 3600,
         ]);
 
         $token = $this->repository->retrieve();
@@ -144,10 +144,10 @@ class FileTokenTest extends TestCase
     public function can_retrieve_token()
     {
         $this->repository->create([
-            'access_token' => 'QC9jztmMfeHoRg5zyTiR',
+            'access_token'  => 'QC9jztmMfeHoRg5zyTiR',
             'refresh_token' => '4IAtuQ1aQZhHeRGlFcX6',
-            'token_type' => 'Bearer',
-            'expires_in' => 3600,
+            'token_type'    => 'Bearer',
+            'expires_in'    => 3600,
         ]);
 
         $token = $this->repository->retrieve();

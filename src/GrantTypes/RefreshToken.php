@@ -40,8 +40,9 @@ class RefreshToken implements GrantTypeInterface
 
         $required = ['token_uri', 'client_id', 'client_secret'];
 
-        if($missing = missing_keys($required, $config)) {
-            $message = 'Parameters: ' . implode(', ', $missing) . ' are required.';
+        if ($missing = missing_keys($required, $config)) {
+            $message = 'Parameters: '.implode(', ', $missing).' are required.';
+
             throw new \InvalidArgumentException($message, 0);
         }
 

@@ -5,10 +5,8 @@
 
 namespace Bmatovu\OAuthNegotiator\Repositories;
 
-use Bmatovu\OAuthNegotiator\Exceptions\FileNotFoundException;
 use Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException;
 use Bmatovu\OAuthNegotiator\Models\Token;
-use SebastianBergmann\Environment\Runtime;
 
 /**
  * Class TokenRepository.

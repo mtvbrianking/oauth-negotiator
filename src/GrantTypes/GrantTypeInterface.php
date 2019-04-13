@@ -15,8 +15,9 @@ interface GrantTypeInterface
      *
      * @param string $refreshToken
      *
-     * @return array API token
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return array API token
      */
     public function getToken($refreshToken = null);
 }
