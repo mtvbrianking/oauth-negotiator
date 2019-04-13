@@ -53,7 +53,7 @@ class RefreshToken implements GrantTypeInterface
 
     /**
      * {@inheritdoc}
-     * 
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getToken($refreshToken = null)

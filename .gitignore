@@ -1,7 +1,9 @@
 .idea
+.php_cs.cache
 composer.lock
 coverage
 coverage.clover
-docs
+docs/cache
 example
+logs
 vendor

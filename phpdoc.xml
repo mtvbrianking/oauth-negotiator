@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Source: http://docs.phpdoc.org/references/configuration.html -->
+<!-- Usage: phpdoc -c phpdoc.xml -->
+<phpdoc>
+    <parser>
+        <target>docs/cache</target>
+        <visibility>public,protected,private,inherited</visibility>
+        <extensions>
+            <extension>php</extension>
+        </extensions>
+    </parser>
+    <transformer>
+        <target>docs</target>
+    </transformer>
+    <logging>
+        <level>warn</level>
+        <paths>
+            <default>{APP_ROOT}/logs/phpdoc-{DATE}.log</default>
+            <errors>{APP_ROOT}/logs/phpdoc-{DATE}.errors.log</errors>
+        </paths>
+    </logging>
+    <transformations>
+        <!-- https://github.com/phpDocumentor/phpDocumentor2/tree/develop/data/templates -->
+        <template name="clean" />
+    </transformations>
+    <files>
+        <directory>src</directory>
+        <!--<directory>tests</directory>-->
+    </files>
+</phpdoc>

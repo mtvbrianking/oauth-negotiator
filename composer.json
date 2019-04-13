@@ -26,6 +26,7 @@
         "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.14",
         "phpunit/phpunit": "~5.0"
     },
     "suggest": {
@@ -47,9 +48,11 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "doc": "phpdoc -d src -t docs",
+        "cs-lint": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
+        "doc": "phpdoc -c phpdoc.xml",
         "test": "vendor/bin/phpunit --debug",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test-coverage": "vendor/bin/phpunit --debug --colors --coverage-html coverage"
     },
     "config": {
         "sort-packages": true
