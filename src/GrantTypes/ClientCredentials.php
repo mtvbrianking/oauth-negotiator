@@ -53,6 +53,7 @@ class ClientCredentials implements GrantTypeInterface
 
     /**
      * {@inheritdoc}
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getToken($refreshToken = null)
