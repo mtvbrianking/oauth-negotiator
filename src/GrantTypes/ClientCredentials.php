@@ -32,14 +32,21 @@ class ClientCredentials implements GrantTypeInterface
      * @param \GuzzleHttp\ClientInterface $client
      * @param array                       $config
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function __construct(ClientInterface $client, array $config)
     {
         $this->client = $client;
 
+        $required = ['token_uri', 'client_id', 'client_secret'];
+
+        if($missing = missing_keys($required, $config)) {
+            $message = 'Parameters: ' . implode(', ', $missing) . ' are required.';
+            throw new \InvalidArgumentException($message, 0);
+        }
+
         $this->config = array_merge([
-            'token_uri' => '',
+            'scope' => '',
         ], $config);
     }
 
@@ -56,6 +63,7 @@ class ClientCredentials implements GrantTypeInterface
             ],
             'json' => [
                 'grant_type' => 'client_credentials',
+                'scope' => $this->config['scope'],
             ],
         ]);
 

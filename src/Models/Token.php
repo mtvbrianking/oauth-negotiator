@@ -36,7 +36,7 @@ class Token implements TokenInterface
     /**
      * Expires at.
      *
-     * @var string Datatime
+     * @var string Datetime
      */
     protected $expires_at = null;
 
@@ -57,7 +57,7 @@ class Token implements TokenInterface
             $this->refresh_token = $attributes['refresh_token'];
         }
 
-        $this->token_type = $attributes['token_type'];
+        $this->token_type = isset($attributes['token_type']) ? $attributes['token_type'] : 'Bearer';
 
         if (isset($attributes['expires_at'])) {
             $this->expires_at = $attributes['expires_at'];

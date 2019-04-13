@@ -15,13 +15,27 @@ use PHPUnit\Framework\TestCase;
 class ClientCredentialsTest extends TestCase
 {
     /**
-     * Test request access token from API.
-     *
+     * @test
+     */
+    public function throws_exception_for_missing_args()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $missing = ['token_uri', 'client_id', 'client_secret'];
+
+        $message = 'Parameters: ' . implode(', ', $missing) . ' are required.';
+
+        $this->expectExceptionMessage($message);
+
+        new ClientCredentials(new Client(), []);
+    }
+
+    /**
      * @test
      *
-     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function test_obtain_new_access_token()
+    public function can_obtain_new_access_token()
     {
         $api_response = [
             'access_token' => '0wzIjZyzFilj0HWomm4Z6790xezQi5V6skFz81YB99IXHu9RE3',
@@ -58,9 +72,10 @@ class ClientCredentialsTest extends TestCase
         $client_secret = 'On8dC2YE7LHwo0fwqOQH';
 
         $grantType = new ClientCredentials($client, [
+            'token_uri' => 'oauth/token',
             'client_id' => $client_id,
             'client_secret' => $client_secret,
-            'token_uri' => 'oauth/token',
+            'scope' => 'user_login,user_registration',
         ]);
 
         $api_token = $grantType->getToken();
@@ -72,6 +87,7 @@ class ClientCredentialsTest extends TestCase
 
         $this->assertEquals(base64_encode($client_id.':'.$client_secret), ltrim($api_request_authorization_header, 'Basic '));
         $this->assertEquals('client_credentials', $api_request_body['grant_type']);
+        $this->assertEquals('user_login,user_registration', $api_request_body['scope']);
         $this->assertEquals($api_response, $api_token);
     }
 }

@@ -220,6 +220,7 @@ class OAuth2Middleware
      * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException
      *
      * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function requestNewToken()
     {

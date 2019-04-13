@@ -15,13 +15,27 @@ use PHPUnit\Framework\TestCase;
 class RefreshTokenTest extends TestCase
 {
     /**
-     * Test refresh access access token from API.
-     *
+     * @test
+     */
+    public function throws_exception_for_missing_args()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $missing = ['token_uri', 'client_id', 'client_secret'];
+
+        $message = 'Parameters: ' . implode(', ', $missing) . ' are required.';
+
+        $this->expectExceptionMessage($message);
+
+        new RefreshToken(new Client(), []);
+    }
+
+    /**
      * @test
      *
-     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function test_refresh_access_token()
+    public function can_refresh_access_token()
     {
         $refresh_token = '7yWd6bgLij5AkeuBQs0hx2EDDcCpXYTUkDVhEZQK8MagOuIuKw';
 
@@ -74,6 +88,8 @@ class RefreshTokenTest extends TestCase
 
         $this->assertEquals(base64_encode($client_id.':'.$client_secret), ltrim($api_request_authorization_header, 'Basic '));
         $this->assertEquals('refresh_token', $api_request_body['grant_type']);
+        $this->assertEquals($refresh_token, $api_request_body['refresh_token']);
+        $this->assertArrayNotHasKey('scope', $api_request_body);
         $this->assertEquals($api_response, $api_token);
     }
 }

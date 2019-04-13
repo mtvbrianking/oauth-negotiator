@@ -5,7 +5,6 @@
     "type": "library",
     "license": "MIT",
     "keywords": [
-        "php",
         "package",
         "oauth",
         "oauth2",
@@ -31,12 +30,15 @@
         "orchestra/testbench": "~3.3.0"
     },
     "suggest": {
-        "monolog/monolog": "For comprehesive logging."
+        "monolog/monolog": "For comprehensive logging."
     },
     "autoload": {
         "psr-4": {
             "Bmatovu\\OAuthNegotiator\\": "src/"
-        }
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -47,7 +49,7 @@
     "prefer-stable": true,
     "scripts": {
         "doc": "phpdoc -d src -t docs",
-        "test": "vendor/bin/phpunit",
+        "test": "vendor/bin/phpunit --debug",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "config": {

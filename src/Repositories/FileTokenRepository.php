@@ -5,7 +5,10 @@
 
 namespace Bmatovu\OAuthNegotiator\Repositories;
 
+use Bmatovu\OAuthNegotiator\Exceptions\FileNotFoundException;
+use Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException;
 use Bmatovu\OAuthNegotiator\Models\Token;
+use SebastianBergmann\Environment\Runtime;
 
 /**
  * Class TokenRepository.
@@ -18,16 +21,6 @@ class FileTokenRepository implements TokenRepositoryInterface
      * @var string
      */
     protected $tokenFile = 'token.txt';
-
-    /**
-     * Constructor.
-     *
-     * @param string $tokenFile
-     */
-    public function __construct($tokenFile)
-    {
-        return $this->tokenFile = $tokenFile;
-    }
 
     /**
      * Get token file.
@@ -50,6 +43,16 @@ class FileTokenRepository implements TokenRepositoryInterface
     }
 
     /**
+     * Constructor.
+     *
+     * @param string $tokenFile
+     */
+    public function __construct($tokenFile)
+    {
+        $this->tokenFile = $tokenFile;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create(array $attributes)
@@ -66,18 +69,12 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function retrieve($access_token = null)
     {
-        if (!file_exists($this->tokenFile)) {
-            return;
-        }
-
         $token = unserialize(file_get_contents($this->tokenFile));
 
-        if ($token == null) {
-            return;
-        }
-
-        if ($access_token && ($token->getAccessToken() != $access_token)) {
-            return;
+        if ($access_token) {
+            if (!$token || ($token->getAccessToken() != $access_token)) {
+                throw new TokenNotFoundException('Missing token.');
+            }
         }
 
         return $token;
@@ -91,7 +88,7 @@ class FileTokenRepository implements TokenRepositoryInterface
         $token = unserialize(file_get_contents($this->tokenFile));
 
         if ($token->getAccessToken() != $access_token) {
-            return;
+            throw new TokenNotFoundException('Missing token.');
         }
 
         // Rewrite token
@@ -111,7 +108,7 @@ class FileTokenRepository implements TokenRepositoryInterface
         $token = unserialize(file_get_contents($this->tokenFile));
 
         if ($token->getAccessToken() != $access_token) {
-            return;
+            throw new TokenNotFoundException('Missing token.');
         }
 
         unlink($this->tokenFile);
