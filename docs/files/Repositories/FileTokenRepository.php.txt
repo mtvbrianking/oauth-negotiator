@@ -55,11 +55,16 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function create(array $attributes)
     {
-        $token = new Token($attributes);
+        $token = new Token(
+            $attributes['access_token'],
+            $attributes['refresh_token'],
+            $attributes['token_type'],
+            $attributes['expires_in']
+        );
 
         file_put_contents($this->tokenFile, serialize($token));
 
-        return new Token($attributes);
+        return $token;
     }
 
     /**
@@ -93,8 +98,15 @@ class FileTokenRepository implements TokenRepositoryInterface
             throw new TokenNotFoundException('Missing token.');
         }
 
+        unlink($this->tokenFile);
+
         // Create new/updated token
-        $token = new Token($attributes);
+        $token = new Token(
+            $attributes['access_token'],
+            $attributes['refresh_token'],
+            $attributes['token_type'],
+            $attributes['expires_in']
+        );
 
         // Overwrite
         file_put_contents($this->tokenFile, serialize($attributes));
