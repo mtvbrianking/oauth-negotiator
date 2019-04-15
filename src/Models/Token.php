@@ -42,30 +42,23 @@ class Token implements TokenInterface
 
     /**
      * Constructor.
-     *
-     * @param array $attributes
+
+     * @param string $access_token
+     * @param string $refresh_token
+     * @param string $token_type
+     * @param int $expires_in
      */
-    public function __construct(array $attributes = [])
+    public function __construct($access_token, $refresh_token, $token_type, $expires_in)
     {
-        if (empty($attributes)) {
-            return;
-        }
+        $this->access_token = $access_token;
 
-        $this->access_token = $attributes['access_token'];
+        $this->refresh_token = $refresh_token;
 
-        if (isset($attributes['refresh_token'])) {
-            $this->refresh_token = $attributes['refresh_token'];
-        }
+        $this->token_type = $token_type;
 
-        $this->token_type = isset($attributes['token_type']) ? $attributes['token_type'] : 'Bearer';
-
-        if (isset($attributes['expires_at'])) {
-            $this->expires_at = $attributes['expires_at'];
-        } else {
-            $this->expires_at = Carbon::now()
-                ->addSeconds($attributes['expires_in'])
-                ->format('Y-m-d H:i:s');
-        }
+        $this->expires_at = Carbon::now()
+            ->addSeconds($expires_in)
+            ->format('Y-m-d H:i:s');
     }
 
     /**

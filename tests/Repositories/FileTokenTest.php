@@ -1,6 +1,6 @@
 <?php
 
-namespace Bmatovu\OAuthNegotiator\Tests\Storage;
+namespace Bmatovu\OAuthNegotiator\Tests\Repositories;
 
 use Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException;
 use Bmatovu\OAuthNegotiator\Models\Token;
@@ -56,29 +56,6 @@ class FileTokenTest extends TestCase
         $this->assertFileExists($this->testTokenFile);
 
         $this->assertInstanceOf(TokenInterface::class, $token);
-    }
-
-    /**
-     * @test
-     *
-     * @group token
-     */
-    public function can_sets_correct_expires_at()
-    {
-        $token = new Token([
-            'access_token'  => 'QC9jztmMfeHoRg5zyTiR',
-            'refresh_token' => '4IAtuQ1aQZhHeRGlFcX6',
-            'token_type'    => 'Bearer',
-            'expires_in'    => 3600,
-        ]);
-
-        $expires_at = Carbon::now()->addSeconds(3600)->format('Y-m-d H:i:s');
-
-        $this->assertInstanceOf(TokenInterface::class, $token);
-        $this->assertEquals('QC9jztmMfeHoRg5zyTiR', $token->getAccessToken());
-        $this->assertEquals('4IAtuQ1aQZhHeRGlFcX6', $token->getRefreshToken());
-        $this->assertEquals('Bearer', $token->getTokenType());
-        $this->assertEquals($expires_at, $token->getExpiresAt());
     }
 
     /**
