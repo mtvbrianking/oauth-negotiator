@@ -45,7 +45,7 @@ class FileTokenRepository implements TokenRepositoryInterface
      *
      * @param string $tokenFile
      */
-    public function __construct($tokenFile)
+    public function __construct($tokenFile = 'token.txt')
     {
         $this->tokenFile = $tokenFile;
     }
@@ -72,6 +72,10 @@ class FileTokenRepository implements TokenRepositoryInterface
      */
     public function retrieve($access_token = null)
     {
+        if (!file_exists($this->tokenFile)) {
+            return null;
+        }
+
         $rawToken = file_get_contents($this->tokenFile);
 
         $token = $rawToken ? unserialize($rawToken) : null;

@@ -6,6 +6,7 @@
 namespace Bmatovu\OAuthNegotiator;
 
 use Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException;
+use Bmatovu\OAuthNegotiator\Repositories\FileTokenRepository;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 
@@ -53,7 +54,12 @@ class OAuth2Middleware
     {
         $this->grantType = $grantType;
         $this->refreshTokenGrantType = $refreshTokenGrantType;
-        $this->tokenRepository = $tokenRepository;
+        if ($tokenRepository) {
+            $this->tokenRepository = $tokenRepository;
+        } else {
+            $fileTokenRepo = new FileTokenRepository();
+            $this->tokenRepository = $fileTokenRepo;
+        }
     }
 
     /**

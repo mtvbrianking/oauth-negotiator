@@ -51,10 +51,10 @@ class ClientCredentialsTest extends TestCase
             new RequestException('Error Communicating with Server', new Request('GET', 'last')),
         ]);
 
-        $handlerStack = HandlerStack::create($mockHandler);
-
         $historyContainer = [];
         $historyMiddleware = Middleware::history($historyContainer);
+
+        $handlerStack = HandlerStack::create($mockHandler);
 
         // Add the history middleware to the handler stack.
         $handlerStack->push($historyMiddleware);
