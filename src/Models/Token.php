@@ -42,11 +42,11 @@ class Token implements TokenInterface
 
     /**
      * Constructor.
-
+     *
      * @param string $access_token
      * @param string $refresh_token
      * @param string $token_type
-     * @param int $expires_in
+     * @param int    $expires_in
      */
     public function __construct($access_token, $refresh_token, $token_type, $expires_in)
     {

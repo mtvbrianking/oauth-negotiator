@@ -4,7 +4,7 @@ namespace Bmatovu\OAuthNegotiator\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class ExampleTest extends TestCase
+class OAuth2MiddlewareTest extends TestCase
 {
     /**
      * A basic unit test example.
