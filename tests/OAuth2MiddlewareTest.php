@@ -14,6 +14,7 @@ use Bmatovu\OAuthNegotiator\OAuth2Middleware;
 use Bmatovu\OAuthNegotiator\GrantTypes\ClientCredentials;
 use Bmatovu\OAuthNegotiator\GrantTypes\RefreshToken;
 use Bmatovu\OAuthNegotiator\Repositories\FileTokenRepository;
+use Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException;
 
 class OAuth2MiddlewareTest extends TestCase
 {
@@ -40,6 +41,110 @@ class OAuth2MiddlewareTest extends TestCase
         }
     }
 
+    protected function extractAccessToken($authHeader)
+    {
+        if(!$authHeader) {
+            return null;
+        }
+
+        $authHeaderParts = explode(' ', $authHeader);
+
+        return end($authHeaderParts);
+    }
+
+    protected function buildSuccessOauthMiddleware($access_token, $refresh_token, $type = 'Bearer', $expires_in = 3600)
+    {
+        $apiResponse = [
+            'access_token'  => $access_token,
+            'refresh_token' => $refresh_token,
+            'token_type'    => 'Bearer',
+            'expires_in'    => 3600,
+        ];
+
+        $mockHandler = new MockHandler([
+            new Response(200, [], json_encode($apiResponse)),
+        ]);
+
+        $historyContainer = [];
+        $historyMiddleware = Middleware::history($historyContainer);
+
+        $handlerStack = HandlerStack::create($mockHandler);
+
+        $handlerStack->push($historyMiddleware);
+
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ];
+
+        $client = new Client([
+            'handler' => $handlerStack,
+            'base_uri' => 'http://localhost:8000/',
+            'headers' => $headers,
+        ]);
+
+        $config = [
+            'token_uri' => 'oauth/token',
+            'client_id' => 'fa5cc82b-6be5-41a4-be48-255fa2aae62b',
+            'client_secret' => '3a4f0716-8216-4d2b-a526-3d001dec4832',
+        ];
+
+        $clientCredentials = new ClientCredentials($client, $config);
+
+        // $refreshToken = new RefreshToken($client, $config);
+        $refreshToken = null;
+
+        $tokenRepo = new FileTokenRepository($this->testTokenFile);
+        // $tokenRepo = null;
+
+        return new OAuth2Middleware($clientCredentials, $refreshToken, $tokenRepo);
+    }
+
+    protected function buildFailureOauthMiddleware()
+    {
+        $apiResponse = [
+            'error' => 'For some reason, you don\'t qualify for a token. Sorry'
+        ];
+
+        $mockHandler = new MockHandler([
+            new Response(401, [], json_encode($apiResponse)),
+        ]);
+
+        $historyContainer = [];
+        $historyMiddleware = Middleware::history($historyContainer);
+
+        $handlerStack = HandlerStack::create($mockHandler);
+
+        $handlerStack->push($historyMiddleware);
+
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ];
+
+        $client = new Client([
+            'handler' => $handlerStack,
+            'base_uri' => 'http://localhost:8000/',
+            'headers' => $headers,
+        ]);
+
+        $config = [
+            'token_uri' => 'oauth/token',
+            'client_id' => 'fa5cc82b-6be5-41a4-be48-255fa2aae62b',
+            'client_secret' => '3a4f0761-8216-4d2b-a526-3d001dec4832',
+        ];
+
+        $clientCredentials = new ClientCredentials($client, $config);
+
+        // $refreshToken = new RefreshToken($client, $config);
+        $refreshToken = null;
+
+        $tokenRepo = new FileTokenRepository($this->testTokenFile);
+        // $tokenRepo = null;
+
+        return new OAuth2Middleware($clientCredentials, $refreshToken, $tokenRepo);
+    }
+
     /**
      * @test
      */
@@ -54,107 +159,254 @@ class OAuth2MiddlewareTest extends TestCase
         $this->assertInstanceOf(OAuth2Middleware::class, $oauth_mw);
     }
 
-    public function can_refresh_expired()
+    /**
+     * @test
+     */
+    public function uses_provided_access_token()
     {
-        // TODO
-    }
+        $accessToken = '0wzIjZyzFilj0HWomm4Z6790xezQi5V6skFz81YB99IXHu9RE3';
+        $refreshToken = '7yWd6bgLij5AkeuBQs0hx2EDDcCpXYTUkDVhEZQK8MagOuIuKw';
 
-    public function can_request_new_token()
-    {
-        // TODO
-    }
+        $oauthMiddleware = $this->buildSuccessOauthMiddleware($accessToken, $refreshToken);
 
-    public function can_use_exiting_valid_token()
-    {
-        // TODO
+        // ...........................................................
+
+        $apiResponse = [
+            'status'  => 'some random data',
+        ];
+
+        $mockHandler = new MockHandler([
+            new Response(200, [], json_encode($apiResponse)),
+        ]);
+
+        $historyContainer = [];
+        $historyMiddleware = Middleware::history($historyContainer);
+
+        $handlerStack = HandlerStack::create($mockHandler);
+
+        $handlerStack->push($oauthMiddleware);
+        $handlerStack->push($historyMiddleware);
+
+        $userChosenAccessToken = 'QBKNcn10frGUSlrbzE17ngD5W1f8L8dcMNPMZGD4V7NDj4CGws';
+
+        $client = new Client([
+            'handler' => $handlerStack,
+            'base_uri' => 'http://localhost:8000/v1/',
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer '.$userChosenAccessToken,
+            ],
+        ]);
+
+        $response = $client->request('GET', 'resource');
+
+        $this->assertNotEmpty($historyContainer);
+        $request = $historyContainer[0]['request'];
+        $apiRequestAuthorizationHeader = $request->getHeader('Authorization')[0];
+
+        $presentAccessToken = $this->extractAccessToken($apiRequestAuthorizationHeader);
+
+        $this->assertNotEquals($accessToken, $presentAccessToken);
+        $this->assertEquals($userChosenAccessToken, $presentAccessToken);
+        $this->assertEquals(json_decode($response->getBody(), true), $apiResponse);
     }
 
     /**
      * @test
-     *
-     * @group staged
      */
-    public function can_sign_http_request()
+    public function can_request_new_token()
     {
-        $apiResponse1 = [
-            'access_token'  => '0wzIjZyzFilj0HWomm4Z6790xezQi5V6skFz81YB99IXHu9RE3',
-            'refresh_token' => '7yWd6bgLij5AkeuBQs0hx2EDDcCpXYTUkDVhEZQK8MagOuIuKw',
-            'token_type'    => 'Bearer',
-            'expires_in'    => 3600,
-        ];
+        $accessToken = '0wzIjZyzFilj0HWomm4Z6790xezQi5V6skFz81YB99IXHu9RE3';
+        $refreshToken = '7yWd6bgLij5AkeuBQs0hx2EDDcCpXYTUkDVhEZQK8MagOuIuKw';
 
-        $mockHandler1 = new MockHandler([
-            new Response(200, [], json_encode($apiResponse1)),
-        ]);
-
-        $historyContainer1 = [];
-        $historyMiddleware1 = Middleware::history($historyContainer1);
-
-        $handlerStack1 = HandlerStack::create($mockHandler1);
-
-        $handlerStack1->push($historyMiddleware1);
-
-        $headers = [
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
-        ];
-
-        $client1 = new Client([
-            'handler' => $handlerStack1,
-            'base_uri' => 'http://localhost:8000/',
-            'headers' => $headers,
-        ]);
-
-        $config = [
-            'token_uri' => 'oauth/token',
-            'client_id' => 'fa5cc82b-6be5-41a4-be48-255fa2aae62b',
-            'client_secret' => '3a4f0761-8216-4d2b-a526-3d001dec4832',
-        ];
-
-        $clientCredentials = new ClientCredentials($client1, $config);
-
-        // $refreshToken = new RefreshToken($client1, $config);
-        $refreshToken = null;
-
-        $tokenRepo = new FileTokenRepository($this->testTokenFile);
-        // $tokenRepo = null;
-
-        $oauthMiddleware = new OAuth2Middleware($clientCredentials, $refreshToken, $tokenRepo);
+        $oauthMiddleware = $this->buildSuccessOauthMiddleware($accessToken, $refreshToken);
 
         // ...........................................................
 
-        $apiResponse2 = [
+        $apiResponse = [
             'status'  => 'some random data',
         ];
 
-        $mockHandler2 = new MockHandler([
-            new Response(200, [], json_encode($apiResponse2)),
+        $mockHandler = new MockHandler([
+            new Response(200, [], json_encode($apiResponse)),
         ]);
 
-        $historyContainer2 = [];
-        $historyMiddleware2 = Middleware::history($historyContainer2);
+        $historyContainer = [];
+        $historyMiddleware = Middleware::history($historyContainer);
 
-        $handlerStack2 = HandlerStack::create($mockHandler2);
+        $handlerStack = HandlerStack::create($mockHandler);
 
-        $handlerStack2->push($oauthMiddleware);
-        $handlerStack2->push($historyMiddleware2);
+        $handlerStack->push($oauthMiddleware);
+        $handlerStack->push($historyMiddleware);
 
-        $client2 = new Client([
-            'handler' => $handlerStack2,
+        $client = new Client([
+            'handler' => $handlerStack,
             'base_uri' => 'http://localhost:8000/v1/',
-            'headers' => $headers,
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ]
         ]);
 
-        $response = $client2->request('GET', 'resource');
+        $response = $client->request('GET', 'resource');
 
-        $this->assertNotEmpty($historyContainer2);
-        $request = $historyContainer2[0]['request'];
-        $api_request_authorization_header = $request->getHeader('Authorization')[0];
+        $this->assertNotEmpty($historyContainer);
+        $request = $historyContainer[0]['request'];
+        $apiRequestAuthorizationHeader = $request->getHeader('Authorization')[0];
 
         $this->assertEquals(
-            '0wzIjZyzFilj0HWomm4Z6790xezQi5V6skFz81YB99IXHu9RE3',
-            ltrim($api_request_authorization_header, 'Bearer ')
+            $accessToken,
+            ltrim($apiRequestAuthorizationHeader, 'Bearer ')
         );
-        $this->assertEquals(json_decode($response->getBody(), true), $apiResponse2);
+        $this->assertEquals(json_decode($response->getBody(), true), $apiResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function throws_exception_if_cant_obtain_new_access_token()
+    {
+        $oauthMiddleware = $this->buildFailureOauthMiddleware();
+
+        $handlerStack = HandlerStack::create();
+
+        $handlerStack->push($oauthMiddleware);
+
+        $this->expectException(TokenRequestException::class);
+        $this->expectExceptionMessage('Unable to request a new access token');
+
+        $client = new Client([
+            'handler' => $handlerStack,
+            'base_uri' => 'http://localhost:8000/v1/',
+        ]);
+
+        $response = $client->request('GET', 'resource');
+    }
+
+    /**
+     * @test
+     */
+    public function can_use_exiting_valid_token()
+    {
+        $tokenRepo = new FileTokenRepository($this->testTokenFile);
+
+        $existingAccessToken = '6OQUFgtm1WgFwTpTK3Snl0qfOLbvAWwKGKTshsdxX0nI1NX4oQ';
+
+        $tokenRepo->create([
+            'access_token'  => $existingAccessToken,
+            'refresh_token' => 'U51GH5zfLm1tshcNEp7HNvGs0vlgXmODfdEYWoFNc9jBa04iBd',
+            'token_type'    => 'Bearer',
+            'expires_in'    => 3600,
+        ]);
+
+        // ...........................................................
+
+        $accessToken = '0wzIjZyzFilj0HWomm4Z6790xezQi5V6skFz81YB99IXHu9RE3';
+        $refreshToken = '7yWd6bgLij5AkeuBQs0hx2EDDcCpXYTUkDVhEZQK8MagOuIuKw';
+
+        $oauthMiddleware = $this->buildSuccessOauthMiddleware($accessToken, $refreshToken);
+
+        // ...........................................................
+
+        $apiResponse = [
+            'status'  => 'some random data',
+        ];
+
+        $mockHandler = new MockHandler([
+            new Response(200, [], json_encode($apiResponse)),
+        ]);
+
+        $historyContainer = [];
+        $historyMiddleware = Middleware::history($historyContainer);
+
+        $handlerStack = HandlerStack::create($mockHandler);
+
+        $handlerStack->push($oauthMiddleware);
+        $handlerStack->push($historyMiddleware);
+
+        $client = new Client([
+            'handler' => $handlerStack,
+            'base_uri' => 'http://localhost:8000/v1/',
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $response = $client->request('GET', 'resource');
+
+        $this->assertNotEmpty($historyContainer);
+        $request = $historyContainer[0]['request'];
+        $apiRequestAuthorizationHeader = $request->getHeader('Authorization')[0];
+
+        $presentAccessToken = $this->extractAccessToken($apiRequestAuthorizationHeader);
+
+        $this->assertNotEquals($accessToken, $presentAccessToken);
+        $this->assertEquals($existingAccessToken, $presentAccessToken);
+        $this->assertEquals(json_decode($response->getBody(), true), $apiResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function can_refresh_existing_expired_token()
+    {
+        $tokenRepo = new FileTokenRepository($this->testTokenFile);
+
+        $existingAccessToken = '6OQUFgtm1WgFwTpTK3Snl0qfOLbvAWwKGKTshsdxX0nI1NX4oQ';
+
+        $tokenRepo->create([
+            'access_token'  => $existingAccessToken,
+            'refresh_token' => '7yWd6bgLij5AkeuBQs0hx2EDDcCpXYTUkDVhEZQK8MagOuIuKw',
+            'token_type'    => 'Bearer',
+            'expires_in'    => -3600,
+        ]);
+
+        // ...........................................................
+
+        $accessToken = '0wzIjZyzFilj0HWomm4Z6790xezQi5V6skFz81YB99IXHu9RE3';
+        $refreshToken = '7yWd6bgLij5AkeuBQs0hx2EDDcCpXYTUkDVhEZQK8MagOuIuKw';
+
+        $oauthMiddleware = $this->buildSuccessOauthMiddleware($accessToken, $refreshToken);
+
+        // ...........................................................
+
+        $apiResponse = [
+            'status'  => 'some random data',
+        ];
+
+        $mockHandler = new MockHandler([
+            new Response(200, [], json_encode($apiResponse)),
+        ]);
+
+        $historyContainer = [];
+        $historyMiddleware = Middleware::history($historyContainer);
+
+        $handlerStack = HandlerStack::create($mockHandler);
+
+        $handlerStack->push($oauthMiddleware);
+        $handlerStack->push($historyMiddleware);
+
+        $client = new Client([
+            'handler' => $handlerStack,
+            'base_uri' => 'http://localhost:8000/v1/',
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $response = $client->request('GET', 'resource');
+
+        $this->assertNotEmpty($historyContainer);
+        $request = $historyContainer[0]['request'];
+        $apiRequestAuthorizationHeader = $request->getHeader('Authorization')[0];
+
+        $presentAccessToken = $this->extractAccessToken($apiRequestAuthorizationHeader);
+
+        $this->assertEquals($accessToken, $presentAccessToken);
+        $this->assertNotEquals($existingAccessToken, $presentAccessToken);
+        $this->assertEquals(json_decode($response->getBody(), true), $apiResponse);
     }
 }

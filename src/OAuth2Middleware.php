@@ -72,7 +72,9 @@ class OAuth2Middleware
     public function __invoke(callable $handler)
     {
         return function (RequestInterface $request, array $options) use ($handler) {
-            $request = $this->signRequest($request);
+            if (!$request->hasHeader('Authorization')) {
+                $request = $this->signRequest($request);
+            }
 
             return $handler($request, $options)
                 ->then(
