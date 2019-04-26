@@ -35,6 +35,10 @@ interface TokenRepositoryInterface
     /**
      * Updates token.
      *
+     *
+     * @param mixed $access_token
+     * @param array $attributes
+     *
      * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException
      *
      * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface Token
