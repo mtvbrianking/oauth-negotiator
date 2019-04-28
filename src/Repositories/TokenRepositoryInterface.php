@@ -35,7 +35,6 @@ interface TokenRepositoryInterface
     /**
      * Updates token.
      *
-     *
      * @param mixed $access_token
      * @param array $attributes
      *

@@ -66,7 +66,7 @@ class AuthorizationCode implements GrantTypeInterface
             ],
             'json' => [
                 'grant_type' => 'authorization_code',
-                'code'   => $this->config['code'],
+                'code'       => $this->config['code'],
                 'scope'      => $this->config['scope'],
             ],
         ]);

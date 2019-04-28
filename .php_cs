@@ -5,6 +5,11 @@
 $rules = [
     '@PSR2' => true,
 
+    // Arrays
+    'binary_operator_spaces' => [
+        'align_double_arrow' => true,
+    ],
+
     // phpdocs
     'phpdoc_types' => true,
     'phpdoc_indent' => true,
