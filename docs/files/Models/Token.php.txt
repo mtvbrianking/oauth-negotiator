@@ -56,7 +56,7 @@ class Token implements TokenInterface
 
         $this->token_type = $token_type;
 
-        if($expires_in) {
+        if ($expires_in !== null) {
             $this->expires_at = Carbon::now()
                 ->addSeconds($expires_in)
                 ->format('Y-m-d H:i:s');

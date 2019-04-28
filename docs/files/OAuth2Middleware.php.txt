@@ -282,7 +282,7 @@ class OAuth2Middleware
 
             return $this->tokenRepository->create($api_token);
         } catch (RequestException $ex) {
-            throw new TokenRequestException('Unable to request a new access token', 0, $ex->getPrevious());
+            throw new TokenRequestException('Unable to obtain a new access token', 0, $ex->getPrevious());
         }
     }
 }
