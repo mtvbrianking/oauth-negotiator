@@ -51,8 +51,8 @@
         "cs-lint": "php-cs-fixer fix --dry-run --diff",
         "cs-fix": "php-cs-fixer fix",
         "doc": "phpdoc -c phpdoc.xml",
-        "test": "vendor/bin/phpunit --debug",
-        "test-coverage": "vendor/bin/phpunit --debug --colors --coverage-html coverage"
+        "test": "phpunit --debug",
+        "test-coverage": "phpunit --debug --coverage-html coverage"
     },
     "config": {
         "sort-packages": true

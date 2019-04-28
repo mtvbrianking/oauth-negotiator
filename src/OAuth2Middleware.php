@@ -44,6 +44,100 @@ class OAuth2Middleware
     protected $token;
 
     /**
+     * Get main grant type.
+     *
+     * @return GrantTypes\GrantTypeInterface
+     */
+    public function getGrantType()
+    {
+        return $this->grantType;
+    }
+
+    /**
+     * Set main grant type.
+     *
+     * @param GrantTypes\GrantTypeInterface $grantType
+     */
+    public function setGrantType($grantType)
+    {
+        $this->grantType = $grantType;
+    }
+
+    /**
+     * Get refresh token grant type.
+     *
+     * @return GrantTypes\GrantTypeInterface
+     */
+    public function getRefreshTokenGrantType()
+    {
+        return $this->refreshTokenGrantType;
+    }
+
+    /**
+     * Set refresh token grant type.
+     *
+     * @param GrantTypes\GrantTypeInterface $refreshTokenGrantType
+     */
+    public function setRefreshTokenGrantType($refreshTokenGrantType)
+    {
+        $this->refreshTokenGrantType = $refreshTokenGrantType;
+    }
+
+    /**
+     * Set token.
+     *
+     * @param \Bmatovu\OAuthNegotiator\Models\TokenInterface $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * Get a valid access token.
+     *
+     * @throws TokenRequestException
+     *
+     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface|null
+     */
+    public function getToken()
+    {
+        // If token is not set try to get it from the persistent storage.
+        if ($this->token === null) {
+            $this->token = $this->tokenRepository->retrieve();
+        }
+
+        // If storage token is not set or expired then try to acquire a new one...
+        if ($this->token === null || $this->token->isExpired()) {
+
+            // Hydrate `rawToken` with a new access token
+            $this->token = $this->requestNewToken();
+        }
+
+        return $this->token;
+    }
+
+    /**
+     * Set token repository.
+     *
+     * @param \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface $tokenRepository
+     */
+    public function setTokenRepository($tokenRepository)
+    {
+        $this->tokenRepository = $tokenRepository;
+    }
+
+    /**
+     * Get token repository.
+     *
+     * @return \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface
+     */
+    public function getTokenRepository()
+    {
+        return $this->tokenRepository;
+    }
+
+    /**
      * Constructor.
      *
      * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface         $grantType
@@ -106,9 +200,6 @@ class OAuth2Middleware
             }
 
             // If we already retried once, give up.
-            // This is extremely unlikely in Guzzle 6+ since we're using promises
-            // to check the response - looping should be impossible, but I'm leaving
-            // the code here in case something interferes with the Middleware
             if ($request->hasHeader('X-Guzzle-Retry')) {
                 return $response;
             }
@@ -125,7 +216,7 @@ class OAuth2Middleware
                 return $response;
             }
 
-            $request = $request->withHeader('X-Guzzle-Retry', '1');
+            $request = $request->withHeader('X-Guzzle-Retry', 1);
 
             // Resign request
             $request = $request->withHeader('Authorization', 'Bearer '.$this->token->getAccessToken());
@@ -169,60 +260,6 @@ class OAuth2Middleware
     }
 
     /**
-     * Set token.
-     *
-     * @param \Bmatovu\OAuthNegotiator\Models\TokenInterface $token
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
-    }
-
-    /**
-     * Get a valid access token.
-     *
-     * @throws TokenRequestException
-     *
-     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface|null
-     */
-    public function getToken()
-    {
-        // If token is not set try to get it from the persistent storage.
-        if ($this->token === null) {
-            $this->token = $this->tokenRepository->retrieve();
-        }
-
-        // If storage token is not set or expired then try to acquire a new one...
-        if ($this->token === null || $this->token->isExpired()) {
-
-            // Hydrate `rawToken` with a new access token
-            $this->token = $this->requestNewToken();
-        }
-
-        return $this->token;
-    }
-
-    /**
-     * Set token repository.
-     *
-     * @param \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface $tokenRepository
-     */
-    public function setTokenRepository($tokenRepository)
-    {
-        $this->tokenRepository = $tokenRepository;
-    }
-
-    /**
-     * Get token repository.
-     *
-     * @return \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface
-     */
-    public function getTokenRepository()
-    {
-        return $this->tokenRepository;
-    }
-
-    /**
      * Acquire a new access token from the server.
      *
      * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException
@@ -234,7 +271,7 @@ class OAuth2Middleware
         try {
             // Refresh an existing, but expired access token.
             if ($this->refreshTokenGrantType && $this->token && $this->token->getRefreshToken()) {
-                // Get an access token using the stored refresh token.
+                // Request new access token using the existing refresh token.
                 $api_token = $this->refreshTokenGrantType->getToken($this->token->getRefreshToken());
 
                 return $this->tokenRepository->create($api_token);
@@ -245,7 +282,7 @@ class OAuth2Middleware
 
             return $this->tokenRepository->create($api_token);
         } catch (RequestException $ex) {
-            throw new TokenRequestException('Unable to request a new access token', 0, $ex->getPrevious());
+            throw new TokenRequestException('Unable to obtain a new access token', 0, $ex->getPrevious());
         }
     }
 }

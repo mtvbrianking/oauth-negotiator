@@ -24,14 +24,14 @@ class Token implements TokenInterface
      *
      * @var string
      */
-    protected $refresh_token = null;
+    protected $refresh_token;
 
     /**
      * Token type.
      *
      * @var string
      */
-    protected $token_type = 'Bearer';
+    protected $token_type;
 
     /**
      * Expires at.
@@ -48,7 +48,7 @@ class Token implements TokenInterface
      * @param string $token_type
      * @param int    $expires_in
      */
-    public function __construct($access_token, $refresh_token, $token_type, $expires_in)
+    public function __construct($access_token, $refresh_token = null, $token_type = 'Bearer', $expires_in = null)
     {
         $this->access_token = $access_token;
 
@@ -56,9 +56,11 @@ class Token implements TokenInterface
 
         $this->token_type = $token_type;
 
-        $this->expires_at = Carbon::now()
-            ->addSeconds($expires_in)
-            ->format('Y-m-d H:i:s');
+        if ($expires_in !== null) {
+            $this->expires_at = Carbon::now()
+                ->addSeconds($expires_in)
+                ->format('Y-m-d H:i:s');
+        }
     }
 
     /**

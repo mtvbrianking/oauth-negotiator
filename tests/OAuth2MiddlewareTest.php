@@ -274,7 +274,7 @@ class OAuth2MiddlewareTest extends TestCase
         $handlerStack->push($oauthMiddleware);
 
         $this->expectException(TokenRequestException::class);
-        $this->expectExceptionMessage('Unable to request a new access token');
+        $this->expectExceptionMessage('Unable to obtain a new access token');
 
         $client = new Client([
             'handler' => $handlerStack,
