@@ -16,6 +16,8 @@ This package works by tapping into each request.
 - If no access token is present in storage, it shall request for a new access token from the OAuth server using the main grant type specified.
 - If there's an existing access token in storage, but it's expired, and a refresh token grant was specified, it shall try to refresh the expired access token using the available refresh token.
 
+See [flowchart](flowchart.jpg) for detailed process illustration.
+
 **Grant types**:
 The package supports four grant types out of box, that is; Client Credentials, Refresh Token, Password, and the Authorization Code grant type. 
 
