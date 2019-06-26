@@ -1,44 +1,63 @@
+language: php
+
+php:
+  - 5.6
+  - 7.2
+
+stages:
+  - compile
+  - test
+  - deploy
+
 jobs:
 
   include:
 
-    - language: php
+    - stage: test
 
-      - stage: test
+      php: 5.6
 
-        php:
-          - 5.6
-          - 7.2
+      cache:
+        - composer
 
-        cache:
-          - composer
+      before_script:
+        - travis_retry composer self-update
+        - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
 
-        before_script:
-          - travis_retry composer self-update
-          - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+      script:
+       - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
-        script:
-         - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+    - stage: test
 
-    - language: php
+      php: 7.2
 
-      - stage: deploy
+      cache:
+        - composer
 
-        php:
-          - 7.2
+      before_script:
+        - travis_retry composer self-update
+        - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
 
-        install:
-          - curl -O http://get.sensiolabs.org/sami.phar
+      script:
+       - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
-        script:
-         - php sami.phar update --only-version=master --force .sami
+    - stage: deploy
 
-        # https://docs.travis-ci.com/user/deployment/pages/
-        deploy:
-          provider: pages
-          skip-cleanup: true
-          github-token: $GITHUB_TOKEN
-          local_dir: docs
-          on:
-            php: 7.2
-            branch: master
+      php:
+        - 7.2
+
+      install:
+        - curl -O http://get.sensiolabs.org/sami.phar
+
+      script:
+       - php sami.phar update --only-version=master --force .sami
+
+      # https://docs.travis-ci.com/user/deployment/pages/
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        local_dir: docs
+        on:
+          php: 7.2
+          branch: master
