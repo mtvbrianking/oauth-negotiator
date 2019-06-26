@@ -1,26 +1,28 @@
+# https://docs.travis-ci.com/user/build-stages
+
 language: php
 
 php:
   - 5.6
   - 7.2
 
+# Default stage = test,
+# Runs for both default php versions - above.
+- stage: test
+
+  cache:
+    - composer
+
+  before_script:
+    - travis_retry composer self-update
+    - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+
+  script:
+   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+
 jobs:
 
   include:
-
-    - stage: test
-
-      name: PHPUnit Tests
-
-      cache:
-        - composer
-
-      before_script:
-        - travis_retry composer self-update
-        - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
-
-      script:
-       - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
     - stage: deploy
 
