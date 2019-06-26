@@ -1,29 +1,47 @@
-language: php
+jobs:
 
-php:
-  - 5.6
-  - 7.2
+  include:
 
-cache:
-  - composer
+    - language: php
 
-install:
-  - curl -O http://get.sensiolabs.org/sami.phar
+      php:
+        - 5.6
 
-before_script:
-  - travis_retry composer self-update
-  - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+      cache:
+        - composer
 
-script:
- - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
- - php sami.phar update --only-version=master --force .sami
+      before_script:
+        - travis_retry composer self-update
+        - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
 
-# https://docs.travis-ci.com/user/deployment/pages/
-deploy:
-  provider: pages
-  skip-cleanup: true
-  github-token: $GITHUB_TOKEN
-  local_dir: docs
-  on:
-    php: 7.2
-    branch: master
+      script:
+       - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+
+    - language: php
+
+      php:
+        - 7.2
+
+      cache:
+        - composer
+
+      install:
+        - curl -O http://get.sensiolabs.org/sami.phar
+
+      before_script:
+        - travis_retry composer self-update
+        - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+
+      script:
+       - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+       - php sami.phar update --only-version=master --force .sami
+
+      # https://docs.travis-ci.com/user/deployment/pages/
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        local_dir: docs
+        on:
+          php: 7.2
+          branch: master
