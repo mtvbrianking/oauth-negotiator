@@ -1,9 +1,13 @@
 language: php
 
+php:
+  - 5.6
+  - 7.2
+
 stages:
-  - compile
   - test
-  - deploy
+  - name: deploy
+    if: branch = master
 
 jobs:
 
@@ -11,10 +15,9 @@ jobs:
 
     - stage: test
 
-      name: Test on PHP v5.6
+      name: PHPUnit > PHP v5.6
 
-      php:
-        - 5.6
+      php: 5.6
 
       cache:
         - composer
@@ -28,10 +31,9 @@ jobs:
 
     - stage: test
 
-      name: Test on PHP v7.2
+      name: PHPUnit > PHP v7.2
 
-      php:
-        - 7.2
+      php: 7.2
 
       cache:
         - composer
@@ -45,10 +47,9 @@ jobs:
 
     - stage: deploy
 
-      name: Deploy source documentation
+      name: Documentation
 
-      php:
-        - 7.2
+      php: 7.2
 
       install:
         - curl -O http://get.sensiolabs.org/sami.phar
