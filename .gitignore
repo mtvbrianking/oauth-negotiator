@@ -3,7 +3,7 @@
 composer.lock
 coverage
 coverage.clover
-docs/cache
+docs
 example
 logs
 vendor
