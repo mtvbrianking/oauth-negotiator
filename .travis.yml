@@ -1,7 +1,7 @@
 language: php
 
 php:
-  # - 5.6
+  - 5.6
   - 7.2
 
 cache:
@@ -12,7 +12,7 @@ install:
 
 before_script:
   - travis_retry composer self-update
-  - travis_retry composer update --no-interaction --prefer-source
+  - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
 
 script:
  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
@@ -25,5 +25,5 @@ deploy:
   github-token: $GITHUB_TOKEN
   local_dir: docs
   on:
-    php: 7.2
+    php: 5.6
     branch: master
