@@ -1,45 +1,27 @@
 language: php
 
-stages:
-  - test
-  - name: deploy
-    if: branch = master
+php:
+  - 5.6
+  - 7.2
+
+# https://docs.travis-ci.com/user/build-stages
+stages: test
+
+  name: PHPUnit tests
+
+  cache:
+    - composer
+
+  before_script:
+    - travis_retry composer self-update
+    - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+
+  script:
+   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 jobs:
 
   include:
-
-    - stage: test
-
-      name: PHPUnit - PHP v5.6
-
-      php: 5.6
-
-      cache:
-        - composer
-
-      before_script:
-        - travis_retry composer self-update
-        - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
-
-      script:
-       - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
-
-    - stage: test
-
-      name: PHPUnit - PHP v7.2
-
-      php: 7.2
-
-      cache:
-        - composer
-
-      before_script:
-        - travis_retry composer self-update
-        - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
-
-      script:
-       - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
     - stage: deploy
 
