@@ -6,6 +6,7 @@ jobs:
 
       php:
         - 5.6
+        - 7.2
 
       cache:
         - composer
@@ -22,18 +23,10 @@ jobs:
       php:
         - 7.2
 
-      cache:
-        - composer
-
       install:
         - curl -O http://get.sensiolabs.org/sami.phar
 
-      before_script:
-        - travis_retry composer self-update
-        - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
-
       script:
-       - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
        - php sami.phar update --only-version=master --force .sami
 
       # https://docs.travis-ci.com/user/deployment/pages/
