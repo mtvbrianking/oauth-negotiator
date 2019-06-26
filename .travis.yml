@@ -8,6 +8,7 @@ cache:
   - composer
 
 before_script:
+  - make
   - travis_retry composer self-update
   - travis_retry composer update --no-interaction --prefer-source
 
@@ -17,9 +18,9 @@ script:
 # https://docs.travis-ci.com/user/deployment/pages/
 deploy:
   provider: pages
-  local_dir: docs
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
-  keep_history: false
+  local_dir: docs
   on:
+    php: 7.2
     branch: master

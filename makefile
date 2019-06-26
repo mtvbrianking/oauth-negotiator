@@ -1,14 +1,14 @@
 .PHONY: all
 
-all: vendor build
+# all: vendor build
 
-composer.lock: composer.json
-    # Updating Dependencies with Composer
-    composer update -o
+# composer.lock: composer.json
+#     # Updating Dependencies with Composer
+#     composer update -o
 
-vendor: composer.lock
-    # Installing Dependencies with Composer
-    composer install -o
+# vendor: composer.lock
+#     # Installing Dependencies with Composer
+#     composer install -o
 
 sami.phar:
     # Get a copy of sami
