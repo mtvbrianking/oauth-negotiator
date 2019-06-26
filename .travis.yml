@@ -14,7 +14,7 @@ stages: test
 
   before_script:
     - travis_retry composer self-update
-    - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+    - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress
 
   script:
    - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
