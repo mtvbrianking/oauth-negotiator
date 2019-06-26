@@ -1,8 +1,10 @@
+language: php
+
 jobs:
 
   include:
 
-    - language: php
+    - stage: test
 
       php:
         - 5.6
@@ -18,7 +20,7 @@ jobs:
       script:
        - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
-    - language: php
+    - stage: deploy
 
       php:
         - 7.2
