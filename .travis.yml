@@ -1,9 +1,5 @@
 language: php
 
-php:
-  - 5.6
-  - 7.2
-
 stages:
   - test
   - name: deploy
@@ -15,7 +11,7 @@ jobs:
 
     - stage: test
 
-      name: PHPUnit > PHP v5.6
+      name: PHPUnit - PHP v5.6
 
       php: 5.6
 
@@ -31,7 +27,7 @@ jobs:
 
     - stage: test
 
-      name: PHPUnit > PHP v7.2
+      name: PHPUnit - PHP v7.2
 
       php: 7.2
 
