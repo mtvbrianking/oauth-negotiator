@@ -46,7 +46,7 @@ class OAuth2Middleware
     /**
      * Get main grant type.
      *
-     * @return GrantTypes\GrantTypeInterface
+     * @return \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface
      */
     public function getGrantType()
     {
@@ -56,7 +56,7 @@ class OAuth2Middleware
     /**
      * Set main grant type.
      *
-     * @param GrantTypes\GrantTypeInterface $grantType
+     * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface $grantType
      */
     public function setGrantType($grantType)
     {
@@ -66,7 +66,7 @@ class OAuth2Middleware
     /**
      * Get refresh token grant type.
      *
-     * @return GrantTypes\GrantTypeInterface
+     * @return \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface
      */
     public function getRefreshTokenGrantType()
     {
@@ -76,7 +76,7 @@ class OAuth2Middleware
     /**
      * Set refresh token grant type.
      *
-     * @param GrantTypes\GrantTypeInterface $refreshTokenGrantType
+     * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface $refreshTokenGrantType
      */
     public function setRefreshTokenGrantType($refreshTokenGrantType)
     {
@@ -148,12 +148,7 @@ class OAuth2Middleware
     {
         $this->grantType = $grantType;
         $this->refreshTokenGrantType = $refreshTokenGrantType;
-        if ($tokenRepository) {
-            $this->tokenRepository = $tokenRepository;
-        } else {
-            $fileTokenRepo = new FileTokenRepository();
-            $this->tokenRepository = $fileTokenRepo;
-        }
+        $this->tokenRepository = ($tokenRepository) ? $tokenRepository : new FileTokenRepository();
     }
 
     /**
@@ -167,14 +162,13 @@ class OAuth2Middleware
     {
         return function (RequestInterface $request, array $options) use ($handler) {
             if (!$request->hasHeader('Authorization')) {
-                $request = $this->signRequest($request);
+                $request = $this->signRequest($request, $this->getToken());
             }
 
-            return $handler($request, $options)
-                ->then(
-                    $this->onFulfilled($request, $options, $handler),
-                    $this->onRejected($request, $options, $handler)
-                );
+            return $handler($request, $options)->then(
+                $this->onFulfilled($request, $options, $handler),
+                $this->onRejected($request, $options, $handler)
+            );
         };
     }
 
@@ -193,7 +187,6 @@ class OAuth2Middleware
     private function onFulfilled(RequestInterface $request, array $options, callable $handler)
     {
         return function ($response) use ($request, $options, $handler) {
-
             // Only deal with Unauthorized response.
             if ($response && $response->getStatusCode() != 401) {
                 return $response;
@@ -218,8 +211,9 @@ class OAuth2Middleware
 
             $request = $request->withHeader('X-Guzzle-Retry', 1);
 
-            // Resign request
-            $request = $request->withHeader('Authorization', 'Bearer '.$this->token->getAccessToken());
+            // Sign request
+            // $request = $request->withHeader('Authorization', $this->token->getTokenType().' '.$this->token->getAccessToken());
+            $request = $this->signRequest($request, $this->getToken());
 
             return $handler($request, $options);
         };
@@ -244,23 +238,22 @@ class OAuth2Middleware
     /**
      * Add auth headers.
      *
-     * @param \Psr\Http\Message\RequestInterface $request
+     * @param \Psr\Http\Message\RequestInterface             $request
+     * @param \Bmatovu\OAuthNegotiator\Models\TokenInterface $token
      *
      * @return \Psr\Http\Message\RequestInterface
      */
-    protected function signRequest(RequestInterface $request)
+    protected function signRequest(RequestInterface $request, $token)
     {
-        $token = $this->getToken();
-
         if ($token === null) {
             return $request;
         }
 
-        return $request->withHeader('Authorization', 'Bearer '.$token->getAccessToken());
+        return $request->withHeader('Authorization', $this->token->getTokenType().' '.$this->token->getAccessToken());
     }
 
     /**
-     * Acquire a new access token from the server.
+     * Acquire a new access token from the oauth2 server.
      *
      * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException
      *
@@ -282,7 +275,7 @@ class OAuth2Middleware
 
             return $this->tokenRepository->create($api_token);
         } catch (RequestException $ex) {
-            throw new TokenRequestException('Unable to obtain a new access token', 0, $ex->getPrevious());
+            throw new TokenRequestException('Unable to obtain a new access token.', 0, $ex->getPrevious());
         }
     }
 }
