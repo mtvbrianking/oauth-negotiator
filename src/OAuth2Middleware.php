@@ -175,8 +175,7 @@ class OAuth2Middleware
     /**
      * Request error event handler.
      *
-     * Handles unauthorized errors by acquiring a new access token and
-     * retrying the request.
+     * Handles unauthorized errors by acquiring a new access token and retrying the request.
      *
      * @param \Psr\Http\Message\RequestInterface $request
      * @param array                              $options
@@ -211,8 +210,6 @@ class OAuth2Middleware
 
             $request = $request->withHeader('X-Guzzle-Retry', 1);
 
-            // Sign request
-            // $request = $request->withHeader('Authorization', $this->token->getTokenType().' '.$this->token->getAccessToken());
             $request = $this->signRequest($request, $this->getToken());
 
             return $handler($request, $options);

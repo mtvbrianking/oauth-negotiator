@@ -18,22 +18,13 @@ use Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException;
 
 class OAuth2MiddlewareTest extends TestCase
 {
-    /**
-     * @var string
-     */
     protected $testTokenFile;
 
-    /**
-     * {@inheritdoc}
-     */
     public function setUp()
     {
         $this->testTokenFile = tempnam(sys_get_temp_dir(), 'phpunit_test_');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function tearDown()
     {
         if (file_exists($this->testTokenFile)) {
