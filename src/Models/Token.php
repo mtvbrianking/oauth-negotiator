@@ -5,8 +5,6 @@
 
 namespace Bmatovu\OAuthNegotiator\Models;
 
-use Carbon\Carbon;
-
 /**
  * Class Token.
  */
@@ -57,9 +55,7 @@ class Token implements TokenInterface
         $this->token_type = $token_type;
 
         if ($expires_in !== null) {
-            $this->expires_at = Carbon::now()
-                ->addSeconds($expires_in)
-                ->format('Y-m-d H:i:s');
+            $this->expires_at = (new DateTime())->add(new DateInterval("PT{$expires_in}S"))->format('Y-m-d H:i:s');
         }
     }
 
@@ -154,12 +150,10 @@ class Token implements TokenInterface
             return false;
         }
 
-        $expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->expires_at);
+        $expires_at = DateTime::createFromFormat('Y-m-d H:i:s', $this->expires_at);
 
-        if ($expires_at->isFuture()) {
-            return false;
-        }
+        $now = new DateTime();
 
-        return true;
+        return $now > $expires_at;
     }
 }
