@@ -34,7 +34,7 @@ interface TokenInterface
     /**
      * Get expires at.
      *
-     * @return string Datetime
+     * @return string \DateTime
      */
     public function getExpiresAt();
 

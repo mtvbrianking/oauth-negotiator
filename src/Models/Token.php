@@ -34,7 +34,7 @@ class Token implements TokenInterface
     /**
      * Expires at.
      *
-     * @var string Datetime
+     * @var string \DateTime
      */
     protected $expires_at = null;
 
@@ -54,9 +54,23 @@ class Token implements TokenInterface
 
         $this->token_type = $token_type;
 
-        if ($expires_in !== null) {
-            $this->expires_at = (new DateTime())->add(new DateInterval("PT{$expires_in}S"))->format('Y-m-d H:i:s');
+        // Enable negative expires_in; for testing...
+
+        if ($expires_in === null) {
+            return;
         }
+
+        if ($expires_in < 0) {
+            $expires_in = abs($expires_in);
+
+            $di = new \DateInterval("PT{$expires_in}S");
+
+            $di->invert = $expires_in;
+        } elseif ($expires_in >= 0) {
+            $di = new \DateInterval("PT{$expires_in}S");
+        }
+
+        $this->expires_at = (new \DateTime())->add($di)->format('Y-m-d H:i:s');
     }
 
     /**
@@ -132,7 +146,7 @@ class Token implements TokenInterface
     /**
      * Get expires at.
      *
-     * @return string Datetime
+     * @return string \DateTime
      */
     public function getExpiresAt()
     {
@@ -150,9 +164,9 @@ class Token implements TokenInterface
             return false;
         }
 
-        $expires_at = DateTime::createFromFormat('Y-m-d H:i:s', $this->expires_at);
+        $expires_at = \DateTime::createFromFormat('Y-m-d H:i:s', $this->expires_at);
 
-        $now = new DateTime();
+        $now = new \DateTime();
 
         return $now > $expires_at;
     }

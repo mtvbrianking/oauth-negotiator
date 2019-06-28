@@ -22,7 +22,6 @@
     "require": {
         "ext-json": "*",
         "php": ">=5.6.4",
-        "nesbot/carbon": "~1.20",
         "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {

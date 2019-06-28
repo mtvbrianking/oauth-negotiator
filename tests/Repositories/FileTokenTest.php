@@ -149,7 +149,7 @@ class FileTokenTest extends TestCase
         $this->assertEquals($newTokenData['refresh_token'], $token->getRefreshToken());
         $this->assertEquals($newTokenData['token_type'], $token->getTokenType());
 
-        $expires_at = (new DateTime())->add(new DateInterval("PT{$newTokenData['expires_in']}S"))->format('Y-m-d H:i:s');
+        $expires_at = (new \DateTime())->add(new \DateInterval("PT{$newTokenData['expires_in']}S"))->format('Y-m-d H:i:s');
         $this->assertEquals($expires_at, $token->getExpiresAt());
     }
 

@@ -38,7 +38,7 @@ class TokenTest extends TestCase
             3600
         );
 
-        $expires_at = (new DateTime())->add(new DateInterval('PT3600S'))->format('Y-m-d H:i:s');
+        $expires_at = (new \DateTime())->add(new \DateInterval('PT3600S'))->format('Y-m-d H:i:s');
 
         $this->assertEquals($expires_at, $token->getExpiresAt());
     }
@@ -57,7 +57,7 @@ class TokenTest extends TestCase
 
         $this->assertFalse($token->isExpired());
 
-        $expires_at = (new DateTime())->format('Y-m-d H:i:s');
+        $expires_at = (new \DateTime())->format('Y-m-d H:i:s');
 
         $token->setExpiresAt($expires_at);
 
