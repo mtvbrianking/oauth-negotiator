@@ -340,8 +340,6 @@ class OAuth2MiddlewareTest extends TestCase
 
     /**
      * @test
-     *
-     * @group current
      */
     public function can_refresh_existing_expired_token()
     {
