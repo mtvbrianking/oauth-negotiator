@@ -34,7 +34,7 @@ class Token implements TokenInterface
     /**
      * Expires at.
      *
-     * @var string \DateTime
+     * @var \DateTime
      */
     protected $expires_at = null;
 
@@ -146,7 +146,7 @@ class Token implements TokenInterface
     /**
      * Get expires at.
      *
-     * @return string \DateTime
+     * @return \DateTime
      */
     public function getExpiresAt()
     {
