@@ -12,14 +12,14 @@ class HelpersTest extends TestCase
     public function can_determine_associative_array()
     {
         // Sequential arrays
-        $arr_1 = array('a', 'b', 'c');
-        $arr_2 = array(0 => 'a', 1 => 'b', 2 => 'c');
-        $arr_3 = array('0' => 'a', '1' => 'b', '2' => 'c');
+        $arr_1 = ['a', 'b', 'c'];
+        $arr_2 = [0 => 'a', 1 => 'b', 2 => 'c'];
+        $arr_3 = ['0' => 'a', '1' => 'b', '2' => 'c'];
 
         // Associative arrays
-        $arr_4 = array(1 => 'a', 0 => 'b', 2 => 'c');
-        $arr_5 = array('1' => 'a', '0' => 'b', '2' => 'c');
-        $arr_6 = array('a' => 'a', 'b' => 'b', 'c' => 'c');
+        $arr_4 = [1 => 'a', 0 => 'b', 2 => 'c'];
+        $arr_5 = ['1' => 'a', '0' => 'b', '2' => 'c'];
+        $arr_6 = ['a' => 'a', 'b' => 'b', 'c' => 'c'];
 
         $this->assertFalse(is_associative($arr_1));
         $this->assertFalse(is_associative($arr_2));

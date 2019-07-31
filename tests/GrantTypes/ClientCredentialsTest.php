@@ -5,11 +5,11 @@ namespace Bmatovu\OAuthNegotiator\Tests\GrantTypes;
 use Bmatovu\OAuthNegotiator\GrantTypes\ClientCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class ClientCredentialsTest extends TestCase
@@ -23,7 +23,7 @@ class ClientCredentialsTest extends TestCase
 
         $missing = ['token_uri', 'client_id', 'client_secret'];
 
-        $message = 'Parameters: ' . implode(', ', $missing) . ' are required.';
+        $message = 'Parameters: '.implode(', ', $missing).' are required.';
 
         $this->expectExceptionMessage($message);
 
@@ -38,17 +38,17 @@ class ClientCredentialsTest extends TestCase
     public function can_obtain_new_access_token()
     {
         $api_response = [
-            'access_token' => '0wzIjZyzFilj0HWomm4Z6790xezQi5V6skFz81YB99IXHu9RE3',
+            'access_token'  => '0wzIjZyzFilj0HWomm4Z6790xezQi5V6skFz81YB99IXHu9RE3',
             'refresh_token' => '7yWd6bgLij5AkeuBQs0hx2EDDcCpXYTUkDVhEZQK8MagOuIuKw',
-            'token_type' => 'Bearer',
-            'expires_in' => 3600,
+            'token_type'    => 'Bearer',
+            'expires_in'    => 3600,
         ];
 
         // Create a mock and queue two responses.
         $mockHandler = new MockHandler([
             new Response(200, [], json_encode($api_response)),
             new Response(401, [], null),
-            new RequestException("Error Communicating with Server", new Request('GET', 'last'))
+            new RequestException('Error Communicating with Server', new Request('GET', 'last')),
         ]);
 
         $handlerStack = HandlerStack::create($mockHandler);
@@ -61,9 +61,9 @@ class ClientCredentialsTest extends TestCase
 
         $client = new Client([
             'base_uri' => 'http://localhost:8000/',
-            'handler' => $handlerStack,
-            'headers' => [
-                'Accept' => 'application/json',
+            'handler'  => $handlerStack,
+            'headers'  => [
+                'Accept'       => 'application/json',
                 'Content-Type' => 'application/json',
             ],
         ]);
@@ -72,10 +72,10 @@ class ClientCredentialsTest extends TestCase
         $client_secret = 'On8dC2YE7LHwo0fwqOQH';
 
         $grantType = new ClientCredentials($client, [
-            'token_uri' => 'oauth/token',
-            'client_id' => $client_id,
+            'token_uri'     => 'oauth/token',
+            'client_id'     => $client_id,
             'client_secret' => $client_secret,
-            'scope' => 'user_login,user_registration',
+            'scope'         => 'user_login,user_registration',
         ]);
 
         $api_token = $grantType->getToken();

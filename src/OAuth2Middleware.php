@@ -218,9 +218,9 @@ class OAuth2Middleware
      * Acquire a new access token from the server.
      *
      * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenRequestException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      *
      * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function requestNewToken()
     {

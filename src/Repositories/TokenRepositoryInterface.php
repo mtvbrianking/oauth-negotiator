@@ -4,7 +4,6 @@
  */
 
 namespace Bmatovu\OAuthNegotiator\Repositories;
-use Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException;
 
 /**
  * Interface TokenRepositoryInterface.
@@ -27,16 +26,18 @@ interface TokenRepositoryInterface
      *
      * @param string $access_token
      *
-     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface|null Token, null if non found.
      * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException
+     *
+     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface|null Token, null if non found.
      */
     public function retrieve($access_token = null);
 
     /**
      * Updates token.
      *
-     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface Token
      * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException
+     *
+     * @return \Bmatovu\OAuthNegotiator\Models\TokenInterface Token
      */
     public function update($access_token, array $attributes);
 
@@ -45,8 +46,9 @@ interface TokenRepositoryInterface
      *
      * @param string $access_token
      *
-     * @return void
      * @throws \Bmatovu\OAuthNegotiator\Exceptions\TokenNotFoundException
+     *
+     * @return void
      */
     public function delete($access_token);
 }

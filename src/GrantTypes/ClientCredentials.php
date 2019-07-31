@@ -40,8 +40,9 @@ class ClientCredentials implements GrantTypeInterface
 
         $required = ['token_uri', 'client_id', 'client_secret'];
 
-        if($missing = missing_keys($required, $config)) {
-            $message = 'Parameters: ' . implode(', ', $missing) . ' are required.';
+        if ($missing = missing_keys($required, $config)) {
+            $message = 'Parameters: '.implode(', ', $missing).' are required.';
+
             throw new \InvalidArgumentException($message, 0);
         }
 
@@ -63,7 +64,7 @@ class ClientCredentials implements GrantTypeInterface
             ],
             'json' => [
                 'grant_type' => 'client_credentials',
-                'scope' => $this->config['scope'],
+                'scope'      => $this->config['scope'],
             ],
         ]);
 
