@@ -159,12 +159,6 @@ class Token implements TokenInterface
             return false;
         }
 
-        $expires_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->expires_at);
-
-        if ($expires_at->isFuture()) {
-            return false;
-        }
-
-        return true;
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->expires_at)->isPast();
     }
 }
