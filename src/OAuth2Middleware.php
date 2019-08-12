@@ -120,7 +120,7 @@ class OAuth2Middleware
             $request = $request->withHeader('X-Guzzle-Retry', 1);
 
             // Resign request
-            $request = $request->withHeader('Authorization', $this->token->getTokenType.' '.$this->token->getAccessToken());
+            $request = $request->withHeader('Authorization', $this->token->getTokenType().' '.$this->token->getAccessToken());
 
             return $handler($request, $options);
         };
@@ -157,7 +157,7 @@ class OAuth2Middleware
             return $request;
         }
 
-        return $request->withHeader('Authorization', $this->token->getTokenType.' '.$token->getAccessToken());
+        return $request->withHeader('Authorization', $this->token->getTokenType().' '.$token->getAccessToken());
     }
 
     /**
