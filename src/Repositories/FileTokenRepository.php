@@ -56,10 +56,10 @@ class FileTokenRepository implements TokenRepositoryInterface
     public function create(array $attributes)
     {
         $token = new Token(
-            $attributes['access_token'],
-            $attributes['refresh_token'],
-            $attributes['token_type'],
-            $attributes['expires_in']
+            array_get($attributes, 'access_token'),
+            array_get($attributes, 'refresh_token'),
+            array_get($attributes, 'token_type', 'Bearer'),
+            array_get($attributes, 'expires_in')
         );
 
         file_put_contents($this->tokenFile, serialize($token));
@@ -106,10 +106,10 @@ class FileTokenRepository implements TokenRepositoryInterface
 
         // Create new/updated token
         $token = new Token(
-            $attributes['access_token'],
-            $attributes['refresh_token'],
-            $attributes['token_type'],
-            $attributes['expires_in']
+            array_get($attributes, 'access_token'),
+            array_get($attributes, 'refresh_token'),
+            array_get($attributes, 'token_type'),
+            array_get($attributes, 'expires_in')
         );
 
         // Overwrite

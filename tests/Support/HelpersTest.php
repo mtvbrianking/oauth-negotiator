@@ -9,6 +9,22 @@ class HelpersTest extends TestCase
     /**
      * @test
      */
+    public function can_get_array_value_or_default()
+    {
+        $user = [
+            'name' => 'John Doe',
+            'email_verified_at' => null,
+        ];
+
+        $this->assertEquals('John Doe', array_get($user, 'name'));
+        $this->assertNull(array_get($user, 'email_verified_at'));
+        $this->assertNull(array_get($user, 'created_at'));
+        $this->assertFalse(array_get($user, 'is_enabled', false));
+    }
+
+    /**
+     * @test
+     */
     public function can_determine_associative_array()
     {
         // Sequential arrays
