@@ -14,7 +14,7 @@ before_script:
   - travis_retry composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
 
 script:
- - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 jobs:
 
