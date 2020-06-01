@@ -57,3 +57,4 @@ Auto-load the package using composer so that it's available in your application 
     // do something...
 ```
 
+Real documentation is still a work in progress, but for now [examine the tests](https://github.com/mtvbrianking/oauth-negotiator/tree/master/tests).
