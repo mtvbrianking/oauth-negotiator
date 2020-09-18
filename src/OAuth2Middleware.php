@@ -227,7 +227,7 @@ class OAuth2Middleware
      */
     private function onRejected(RequestInterface $request, array $options, callable $handler)
     {
-        return function ($reason) use ($request, $options) {
+        return function ($reason) {
             return \GuzzleHttp\Promise\rejection_for($reason);
         };
     }
