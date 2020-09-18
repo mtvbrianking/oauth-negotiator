@@ -18,7 +18,7 @@ class FileTokenRepository implements TokenRepositoryInterface
      *
      * @var string
      */
-    protected $tokenFile = 'token.txt';
+    protected $tokenFile = 'token.key';
 
     /**
      * Get token file.

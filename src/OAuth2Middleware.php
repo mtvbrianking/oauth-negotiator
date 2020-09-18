@@ -210,7 +210,7 @@ class OAuth2Middleware
 
             $request = $request->withHeader('X-Guzzle-Retry', 1);
 
-            $request = $this->signRequest($request, $this->getToken());
+            $request = $this->signRequest($request, $this->token);
 
             return $handler($request, $options);
         };
