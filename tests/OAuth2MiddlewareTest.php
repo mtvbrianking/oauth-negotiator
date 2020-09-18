@@ -20,12 +20,12 @@ class OAuth2MiddlewareTest extends TestCase
 {
     protected $testTokenFile;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->testTokenFile = tempnam(sys_get_temp_dir(), 'phpunit_test_');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists($this->testTokenFile)) {
             unlink($this->testTokenFile);

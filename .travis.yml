@@ -3,8 +3,7 @@
 language: php
 
 php:
-  - 5.6
-  - 7.2
+  - 7.3
 
 # Default stage = test,
 # Runs for both default php versions - above.
@@ -24,7 +23,7 @@ jobs:
 
       name: Documentation
 
-      php: 7.2
+      php: 7.3
 
       install:
         - curl -O http://get.sensiolabs.org/sami.phar

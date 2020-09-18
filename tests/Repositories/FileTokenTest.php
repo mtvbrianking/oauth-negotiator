@@ -23,7 +23,7 @@ class FileTokenTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->testTokenFile = tempnam(sys_get_temp_dir(), 'phpunit_test_');
 
@@ -33,7 +33,7 @@ class FileTokenTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (file_exists($this->testTokenFile)) {
             unlink($this->testTokenFile);
