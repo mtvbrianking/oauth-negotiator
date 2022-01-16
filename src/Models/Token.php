@@ -5,6 +5,9 @@
 
 namespace Bmatovu\OAuthNegotiator\Models;
 
+use DateTime;
+use DateInterval;
+
 /**
  * Class Token.
  */
@@ -136,7 +139,7 @@ class Token implements TokenInterface
     /**
      * Set expires at.
      *
-     * @param string $expires_at
+     * @param string|null $expires_at
      */
     public function setExpiresAt($expires_at)
     {
@@ -146,7 +149,7 @@ class Token implements TokenInterface
     /**
      * Get expires at.
      *
-     * @return \DateTime
+     * @return string|null
      */
     public function getExpiresAt()
     {

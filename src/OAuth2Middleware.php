@@ -46,6 +46,8 @@ class OAuth2Middleware
     /**
      * Get main grant type.
      *
+     * @codeCoverageIgnore
+     *
      * @return \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface
      */
     public function getGrantType()
@@ -56,15 +58,19 @@ class OAuth2Middleware
     /**
      * Set main grant type.
      *
+     * @codeCoverageIgnore
+     *
      * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface $grantType
      */
-    public function setGrantType($grantType)
+    public function setGrantType(GrantTypeInterface $grantType)
     {
         $this->grantType = $grantType;
     }
 
     /**
      * Get refresh token grant type.
+     *
+     * @codeCoverageIgnore
      *
      * @return \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface
      */
@@ -76,9 +82,11 @@ class OAuth2Middleware
     /**
      * Set refresh token grant type.
      *
+     * @codeCoverageIgnore
+     *
      * @param \Bmatovu\OAuthNegotiator\GrantTypes\GrantTypeInterface $refreshTokenGrantType
      */
-    public function setRefreshTokenGrantType($refreshTokenGrantType)
+    public function setRefreshTokenGrantType(GrantTypeInterface $refreshTokenGrantType)
     {
         $this->refreshTokenGrantType = $refreshTokenGrantType;
     }
@@ -86,9 +94,11 @@ class OAuth2Middleware
     /**
      * Set token.
      *
+     * @codeCoverageIgnore
+     *
      * @param \Bmatovu\OAuthNegotiator\Models\TokenInterface $token
      */
-    public function setToken($token)
+    public function setToken(TokenInterface $token)
     {
         $this->token = $token;
     }
@@ -120,15 +130,19 @@ class OAuth2Middleware
     /**
      * Set token repository.
      *
+     * @codeCoverageIgnore
+     *
      * @param \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface $tokenRepository
      */
-    public function setTokenRepository($tokenRepository)
+    public function setTokenRepository(TokenRepositoryInterface $tokenRepository)
     {
         $this->tokenRepository = $tokenRepository;
     }
 
     /**
      * Get token repository.
+     *
+     * @codeCoverageIgnore
      *
      * @return \Bmatovu\OAuthNegotiator\Repositories\TokenRepositoryInterface
      */
@@ -161,7 +175,7 @@ class OAuth2Middleware
     public function __invoke(callable $handler)
     {
         return function (RequestInterface $request, array $options) use ($handler) {
-            if (!$request->hasHeader('Authorization')) {
+            if (! $request->hasHeader('Authorization')) {
                 $request = $this->signRequest($request, $this->getToken());
             }
 
@@ -204,11 +218,8 @@ class OAuth2Middleware
 
             // Acquire a new access token, and retry the request.
             $this->token = $this->getToken();
-            if ($this->token === null) {
-                return $response;
-            }
 
-            $request = $request->withHeader('X-Guzzle-Retry', 1);
+            $request = $request->withHeader('X-Guzzle-Retry', '1');
 
             $request = $this->signRequest($request, $this->token);
 
@@ -242,10 +253,6 @@ class OAuth2Middleware
      */
     protected function signRequest(RequestInterface $request, $token)
     {
-        if ($token === null) {
-            return $request;
-        }
-
         return $request->withHeader('Authorization', $this->token->getTokenType().' '.$this->token->getAccessToken());
     }
 

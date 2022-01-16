@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
     backupGlobals="false"
     backupStaticAttributes="false"
     bootstrap="vendor/autoload.php"
@@ -10,11 +10,11 @@
     convertWarningsToExceptions="true"
     processIsolation="false"
     stopOnFailure="true">
-    <coverage processUncoveredFiles="true">
-        <include>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
-        </include>
-    </coverage>
+        </whitelist>
+    </filter>
     <testsuites>
         <testsuite name="Bmatovu OAuth Negotiator Test Suite">
             <directory>./tests</directory>
