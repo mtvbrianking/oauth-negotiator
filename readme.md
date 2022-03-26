@@ -3,9 +3,6 @@
 [![Total Downloads](https://poser.pugx.org/bmatovu/oauth-negotiator/downloads)](https://packagist.org/packages/bmatovu/oauth-negotiator)
 [![Latest Stable Version](https://poser.pugx.org/bmatovu/oauth-negotiator/v/stable)](https://packagist.org/packages/bmatovu/oauth-negotiator)
 [![License](https://poser.pugx.org/bmatovu/oauth-negotiator/license)](https://github.com/mtvbrianking/oauth-negotiator/blob/master/license.txt)
-[![Build Status](https://travis-ci.org/mtvbrianking/oauth-negotiator.svg?branch=master)](https://travis-ci.org/mtvbrianking/oauth-negotiator)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mtvbrianking/oauth-negotiator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/mtvbrianking/oauth-negotiator/?branch=master)
-[![StyleCI](https://github.styleci.io/repos/177835567/shield?branch=master)](https://github.styleci.io/repos/177835567)
 
 OAuth negotiator is a PHP Guzzle HTTP v6.x Client [Middleware](http://docs.guzzlephp.org/en/stable/handlers-and-middleware.html) that will help you acquire, and refresh your access tokens automatically per application request to the [OAuth2](https://tools.ietf.org/html/rfc6749) server so you don't have to worry about non-existent or expired access tokens.
 
