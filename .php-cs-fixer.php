@@ -1,14 +1,29 @@
 <?php
 
-// https://mlocati.github.io/php-cs-fixer-configurator/
+// https://mlocati.github.io/php-cs-fixer-configurator
+// https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/v3.0.0/UPGRADE-v3.md
+
+declare(strict_types=1);
+
+$excludes = [
+    'docs',
+    'example',
+    'logs',
+    'tests',
+    'vendor',
+];
+
+$finder = PhpCsFixer\Finder::create()
+    ->ignoreDotFiles(false)
+    ->ignoreVCSIgnored(true)
+    ->exclude($excludes)
+    ->in(__DIR__);
 
 $rules = [
     '@PSR2' => true,
 
     // Arrays
-    'binary_operator_spaces' => [
-        'align_double_arrow' => true,
-    ],
+    'binary_operator_spaces' => true,
 
     // phpdocs
     'phpdoc_types' => true,
@@ -20,7 +35,7 @@ $rules = [
     'phpdoc_separation' => true,
     'phpdoc_scalar' => true,
     'phpdoc_order' => true,
-    'phpdoc_inline_tag' => true,
+    'phpdoc_inline_tag_normalizer' => true,
     'phpdoc_return_self_reference' => true,
     'phpdoc_var_without_name' => true,
     'phpdoc_var_annotation_correct_order' => true,
@@ -30,20 +45,10 @@ $rules = [
     ],
 ];
 
-$excludes = [
-    'docs',
-    'example',
-    'logs',
-    'tests',
-    'vendor',
-];
-
-return PhpCsFixer\Config::create()
+$config = new PhpCsFixer\Config();
+$config
+    ->setRiskyAllowed(true)
     ->setRules($rules)
-    ->setFinder(
-        PhpCsFixer\Finder::create()
-            ->exclude($excludes)
-            ->in(__DIR__.'/src')
-            ->ignoreDotFiles(true)
-            ->ignoreVCS(true)
-    );
+    ->setFinder($finder);
+
+return $config;

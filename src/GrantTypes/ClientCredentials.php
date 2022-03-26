@@ -60,13 +60,13 @@ class ClientCredentials implements GrantTypeInterface
     {
         $response = $this->client->request('POST', $this->config['token_uri'], [
             'headers' => [
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
                 'Authorization' => 'Basic '.base64_encode($this->config['client_id'].':'.$this->config['client_secret']),
             ],
             'json' => [
                 'grant_type' => 'client_credentials',
-                'scope'      => $this->config['scope'],
+                'scope' => $this->config['scope'],
             ],
         ]);
 
